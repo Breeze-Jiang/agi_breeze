@@ -43,3 +43,12 @@
     存储到了.git  仓库中，有了第一个快照
     2 insertions 新增了2行内容
 
+    git config --global user.name "your name"
+    git config --global user.email "your email@example.com"
+    提供证件信息，用于提交代码时，记录提交人
+    gitee 码云
+    - 1.在gitee 码云上创建一个仓库
+    - 2.在本地仓库中，执行git push 命令，将本地仓库的代码推送到gitee 码云的仓库中
+## repo 仓库
+  - remote orgin 远程源头 master/main
+
