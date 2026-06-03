@@ -1,0 +1,186 @@
+/* ============================================================
+   CSS Reset (without universal selector)
+   Based on modern best practices:
+   - normalize.css / sanitize.css
+   - CSS Remedy
+   - Josh Comeau's Custom CSS Reset (adapted)
+   ============================================================ */
+
+/* 1. Box-sizing — inherit 让所有元素使用父级盒模型 */
+html {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+/* 2. 移除默认 margin / padding */
+h1, h2, h3, h4, h5, h6,
+p,
+blockquote,
+figure,
+pre,
+dl, dd,
+ol, ul,
+fieldset,
+legend {
+  margin: 0;
+  padding: 0;
+}
+
+/* 3. 列表去掉圆点 */
+ol, ul {
+  list-style: none;
+}
+
+/* 4. 链接保持文本颜色继承 */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* 5. 图片默认 block，避免底部空白；max-width 避免溢出 */
+img,
+svg,
+video,
+canvas,
+audio,
+iframe,
+embed,
+object {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 6. 表单元素字体继承 */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  margin: 0;
+}
+
+/* 7. 按钮重置 */
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+/* 8. 表格 */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+caption, th, td {
+  text-align: left;
+  font-weight: normal;
+  vertical-align: middle;
+}
+
+/* 9. HTML5 语义元素 block 化 */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+menu,
+nav,
+section,
+summary {
+  display: block;
+}
+
+/* 10. 隐藏模板元素 */
+template,
+[hidden] {
+  display: none;
+}
+
+/* 11. 文字截断防溢出 */
+p, h1, h2, h3, h4, h5, h6 {
+  overflow-wrap: break-word;
+}
+
+/* 12. body 最小高度 & 字体平滑 */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  height: 100vh;
+  background-color: #ededed;
+}
+/* 业务样式 */
+.page {
+  position:absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* 背景调试 */
+  /* background-color: skyblue; */
+}
+.page__hd {
+  padding: 40px;
+}
+.page__title {
+  text-align: left;
+  /* 16 默认 */
+  font-size: 20px;
+  font-weight: 400;
+}
+.page__desc {
+  margin-top: 4px;
+  color:rgba(0,0,0,0.45);
+  text-align: left;
+  font-size: 14px;
+}
+/* 按钮组件区域 */
+.button-sp-area {
+  text-align: center;
+  margin: 15px auto;
+  padding: 15px;
+}
+.weui-btn {
+  position: relative;
+  display:block;
+  min-width: 184px;
+  max-width: 280px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 12px 24px;  /* 顺时针设置 上右下左 */
+  font-weight: 500;
+  font-size: 17px;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  line-height: 1.41176471;
+  border-radius: 8px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  user-select: none;
+}
+.weui-btn_primary {
+  background-color: #07c160;
+}
+.weui-btn_default {
+  background-color: rgba(0,0,0,0.1);
+  color: rgba(0,0,0,0.9);
+}
+.weui-btn + .weui-btn {
+  margin-top: 15px;
+}
