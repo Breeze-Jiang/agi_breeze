@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    //创建一个空对象
+    //Object 是顶层的对象
+    //Object
+    // const zzd = new Object();
+    // console.log(zzd);
+    function Person (name, age) {
+      // 构造实例的，实例私有的
+      console.log(this);
+      this.name = name;
+      this.age = age;
+    }
+    //原型对象上的方法是共用的
+    Person.prototype.poem = '仁义礼智信';
+    Person.prototype.say = function(){
+      console.log(`hello my name is${this.name}`);
+    }
+    Person.prototype.timeMF = function(){
+      console.log('timeMF');
+    }
+    const zwy = new Person('zwy', 18);
+    console.log(zwy);
+    console.log(zwy.poem);
+    zwy.say();
+    zwy.timeMF();
+    console.log(zwy.toString());
+  </script>
+</body>
+</html>
