@@ -21,3 +21,16 @@ es6是js在2015年发布的新版本，新增了很多语法特性，比如箭�
   - import from
   - export default
   - export
+
+## nlp任务 sentiment analysis (classification) 情感分析
+
+- 情感分类
+正面 | 负面 | 中性
+电商等行业中非常重要 客户服务，预警，产品质检等
+后台
+- 信息提取 information extraction
+- 主题推断 topic classification
+- 文本总结 summarization
+老板，行政岗，小编 需要对长文本进行总结，提取出信息，减少工作量
+仅用几分钟，我们就可以构建多个用于对文本进行推理的系统，而以前需要熟练的机器学习人员数天到数周的时间（平等）
+让我们兴奋，可以用prompt 构建nlp系统
