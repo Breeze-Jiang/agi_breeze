@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    console.log('start');
+    fetch('https://api.deepseek.com/v1/chat/completions/chat/completions/v1')//fetch的返回值是一个Promise对象，底层是promise
+    .then(data => {
+      console.log(data);
+    })
+  </script>
+</body>
+</html>
