@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const arr = [6,8,13,15];
+    console.log(arr.map((item,index,self) => {
+      return item * 2;
+    }));
+    console.log(arr);
+    console.log(arr.filter((item,index,self) => {
+      return item % 2 === 0;
+    }));
+    console.log(arr.every((item,index,self) => {
+      return item % 2 === 0;
+    }));//false 只要有一个不满足 就是false
+    console.log(arr.some((item,index,self) => {
+      return item % 2 === 0;
+    }));//true 有一个满足 就是true
+    console.log(arr.reduce((pre,cur) => {
+      return pre + cur;
+    }));//40
+  </script>
+</body>
+</html>
