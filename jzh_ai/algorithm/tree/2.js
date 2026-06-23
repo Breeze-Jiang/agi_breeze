@@ -40,43 +40,36 @@ function preOrder(tree){
         preOrder(tree.right)
 }
 function inOrder(tree){
-    // 递归遍历
-    if(!tree){
-        return
-    }
-    // 中序遍历
-   
-        preOrder(tree.left)
-        console.log('当前节点',tree.val) //根节点先
-        preOrder(tree.right)
+    if(!tree){ return }
+    inOrder(tree.left)                // ✅ 应该递归调用 inOrder
+    console.log('当前节点',tree.val)
+    inOrder(tree.right)
 }
 function postOrder(tree){
-    // 递归遍历
-    if(!tree){
-        return
-    }
-    // 后序遍历
-   preOrder(tree.left)
-        preOrder(tree.right)
-        console.log('当前节点',tree.val) //根节点最后
-       
+    if(!tree){ return }
+    postOrder(tree.left)              // ✅ 应该递归调用 postOrder
+    postOrder(tree.right)
+    console.log('当前节点',tree.val)
 }
 function levelOrder(tree){
-    const queue=[]; //队列实现
-    const result=[]; //结果数组
-    if(!tree) {return result;}
-    queue.push(tree);
-    while(queue.length){
-        const node=queue.shift();
-        result.push(node.val);
-        if(node.left){
+    const queue=[];    // 队列：存储待访问的节点
+    const result=[];   // 结果数组：按层序顺序收集节点值
+    if(!tree) {return result;}  // 空树直接返回空数组
+    
+    queue.push(tree);  // 1️⃣ 根节点入队
+    
+    while(queue.length){  // 2️⃣ 队列非空时循环
+        const node=queue.shift();  // ⚡ 出队：取队首节点
+        result.push(node.val);     // ✅ 访问：记录当前节点值
+        
+        if(node.left){             // 3️⃣ 左子节点入队
             queue.push(node.left);
         }
-        if(node.right){
+        if(node.right){            // 4️⃣ 右子节点入队
             queue.push(node.right);
         }
     }
-    return result;
+    return result;  // 返回层序遍历结果
 }
 preOrder(tree)
 console.log('-----------------')
