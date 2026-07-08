@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent 知识图谱 - 今日学习总结</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #0c0c1d 0%, #1a1a3e 50%, #0d0d2b 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    .container {
+      width: 100%;
+      max-width: 1400px;
+    }
+    h1 {
+      text-align: center;
+      color: #e0e0ff;
+      font-size: 2rem;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+    .subtitle {
+      text-align: center;
+      color: #8888bb;
+      font-size: 0.9rem;
+      margin-bottom: 30px;
+    }
+
+    /* ===== 知识图谱主体 ===== */
+    .graph {
+      position: relative;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 50px 30px 30px;
+      min-height: 700px;
+    }
+    /* SVG连线层 */
+    .graph svg {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* 节点布局：CSS Grid 5列 */
+    .nodes {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 24px 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ===== 节点卡片 ===== */
+    .node {
+      background: rgba(30,30,70,0.7);
+      border: 1.5px solid rgba(120,120,220,0.25);
+      border-radius: 16px;
+      padding: 18px 14px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+      cursor: default;
+      position: relative;
+    }
+    .node:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(80,80,200,0.3);
+      border-color: rgba(160,160,255,0.6);
+    }
+    .node .icon {
+      font-size: 2rem;
+      margin-bottom: 6px;
+    }
+    .node .title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: #d0d0ff;
+      margin-bottom: 4px;
+    }
+    .node .desc {
+      font-size: 0.78rem;
+      color: #9999cc;
+      line-height: 1.5;
+    }
+
+    /* 颜色变体 */
+    .node.central {
+      grid-column: 3;
+      grid-row: 1;
+      background: linear-gradient(135deg, rgba(100,60,220,0.5), rgba(60,40,160,0.6));
+      border-color: rgba(180,140,255,0.6);
+      box-shadow: 0 0 50px rgba(130,100,255,0.25);
+    }
+    .node.central .title { color: #fff; font-size: 1.3rem; }
+    .node.central .desc { color: #ccc; }
+
+    .node.problem { border-left: 3px solid #ff6b6b; }
+    .node.solution { border-left: 3px solid #51cf66; }
+    .node.framework { border-left: 3px solid #ffd43b; }
+    .node.foundation { border-left: 3px solid #74c0fc; }
+    .node.demo { border-left: 3px solid #da77f2; }
+
+    /* 大节点跨列 */
+    .node.wide {
+      grid-column: span 2;
+    }
+
+    /* ===== 图例 ===== */
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 30px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #aaa;
+    }
+    .legend-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+    .legend-dot.problem { background: #ff6b6b; }
+    .legend-dot.solution { background: #51cf66; }
+    .legend-dot.framework { background: #ffd43b; }
+    .legend-dot.foundation { background: #74c0fc; }
+    .legend-dot.demo { background: #da77f2; }
+
+    /* ===== 总结语 ===== */
+    .summary-box {
+      margin-top: 28px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .summary-box h3 {
+      color: #c0c0ff;
+      font-size: 1rem;
+      margin-bottom: 8px;
+    }
+    .summary-box p {
+      color: #9999cc;
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+    .highlight {
+      color: #ffd43b;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🧠 Agent 智能体 · 知识图谱</h1>
+  <p class="subtitle">基于今日学习内容 — LangChain + Tool + Memory + RAG + MCP + Skills</p>
+
+  <div class="graph">
+    <!-- SVG连线（装饰用） -->
+    <svg>
+      <!-- 从中央Agent到各模块的连线概念 -->
+      <defs>
+        <radialGradient id="glow">
+          <stop offset="0%" stop-color="rgba(130,100,255,0.15)"/>
+          <stop offset="100%" stop-color="rgba(130,100,255,0)"/>
+        </radialGradient>
+      </defs>
+      <circle cx="50%" cy="18%" r="200" fill="url(#glow)"/>
+    </svg>
+
+    <div class="nodes">
+      <!-- 第1行：中央 - Agent -->
+      <div class="node central">
+        <div class="icon">🤖</div>
+        <div class="title">Agent 智能体</div>
+        <div class="desc">LLM + Memory + Tool<br>+ RAG + MCP + Skills<br>能思考、规划、执行任务</div>
+      </div>
+
+      <!-- 第2行：LLM的5个问题 + 解决方案 -->
+      <div class="node problem">
+        <div class="icon">🧠❌</div>
+        <div class="title">问题：无状态</div>
+        <div class="desc">LLM记不住<br>上周说过的话</div>
+      </div>
+      <div class="node solution">
+        <div class="icon">💾</div>
+        <div class="title">Memory 记忆</div>
+        <div class="desc">数据库 / Redis<br>前端存储 / 上下文</div>
+      </div>
+
+      <div class="node problem">
+        <div class="icon">🔒❌</div>
+        <div class="title">问题：不会动手</div>
+        <div class="desc">只能给思路<br>不能执行操作</div>
+      </div>
+      <div class="node solution">
+        <div class="icon">🔧</div>
+        <div class="title">Tool Use 工具调用</div>
+        <div class="desc">读写文件 / 调API<br>执行命令 / 发请求</div>
+      </div>
+
+      <div class="node problem">
+        <div class="icon">📄❌</div>
+        <div class="title">问题：不知内部文档</div>
+        <div class="desc">私有知识库<br>LLM毫不知情</div>
+      </div>
+      <div class="node solution">
+        <div class="icon">🔍</div>
+        <div class="title">RAG 检索增强</div>
+        <div class="desc">向量检索 → 注入Prompt<br>让LLM获取内部知识</div>
+      </div>
+
+      <div class="node problem">
+        <div class="icon">📰❌</div>
+        <div class="title">问题：无实时数据</div>
+        <div class="desc">训练数据截止<br>不知道最新新闻</div>
+      </div>
+      <div class="node solution">
+        <div class="icon">🔌</div>
+        <div class="title">MCP 协议</div>
+        <div class="desc">第三方Tool标准协议<br>实时获取外部数据</div>
+      </div>
+
+      <div class="node problem">
+        <div class="icon">📋❌</div>
+        <div class="title">问题：复杂任务编排</div>
+        <div class="desc">做PPT / 分析股市<br>自动买卖</div>
+      </div>
+      <div class="node solution">
+        <div class="icon">⚡</div>
+        <div class="title">Skills 技能</div>
+        <div class="desc">任务蒸馏固化<br>可复用的任务流</div>
+      </div>
+
+      <!-- 第4行：工作流程 -->
+      <div class="node wide foundation" style="grid-column: span 5;">
+        <div class="icon">🔄</div>
+        <div class="title">Agent 工作流程</div>
+        <div class="desc">
+          <strong>User Prompt</strong> →
+          <strong style="color:#ffd43b">LLM 规划+推理</strong> →
+          [要不要加载 Memory?] → [要不要调用 Tool? 分步骤] → [要不要 RAG 查询?]
+          → 结果注入 Prompt Template → <strong style="color:#51cf66">返回最终结果</strong>
+        </div>
+      </div>
+
+      <!-- 第5行：LangChain框架 -->
+      <div class="node framework">
+        <div class="icon">⛓️</div>
+        <div class="title">@langchain/openai</div>
+        <div class="desc">统一LLM接口<br>兼容各家模型<br>ChatOpenAI 类</div>
+      </div>
+      <div class="node framework">
+        <div class="icon">🛠️</div>
+        <div class="title">@langchain/core/tools</div>
+        <div class="desc">Tool 抽象类<br>name + description<br>+ schema (Zod校验)</div>
+      </div>
+      <div class="node framework">
+        <div class="icon">💬</div>
+        <div class="title">@langchain/core/messages</div>
+        <div class="desc">HumanMessage<br>SystemMessage<br>ToolMessage<br>AIMessage</div>
+      </div>
+      <div class="node framework">
+        <div class="icon">🔗</div>
+        <div class="title">model.bindTools()</div>
+        <div class="desc">将Tool注册给LLM<br>LLM自动判断<br>何时调用哪个工具</div>
+      </div>
+      <div class="node framework">
+        <div class="icon">✅</div>
+        <div class="title">Zod 参数校验</div>
+        <div class="desc">z.object({...})<br>z.string().describe()<br>类型安全的参数约束</div>
+      </div>
+
+      <!-- 第6行：Tool机制 -->
+      <div class="node wide solution" style="grid-column: span 5;">
+        <div class="icon">⚙️</div>
+        <div class="title">Tool 的工作机制</div>
+        <div class="desc">
+          <strong>定义两个部分：</strong>
+          ① 异步处理函数（干活的逻辑）&nbsp;&nbsp;
+          ② 描述对象（name + description + schema）
+          <br>
+          <strong>调用流程：</strong>
+          LLM判断需要Tool → 停止生成 → 返回
+          <span style="color:#ffd43b">tool_calls{id, name, arguments}</span>
+          → 执行Tool函数 → 结果按id关联回会话 → LLM继续推理
+          <br>
+          <strong>并行执行：</strong>
+          多个Tool用 <span style="color:#ff6b6b">Promise.all([...])</span> 并行执行，提高性能
+        </div>
+      </div>
+
+      <!-- 第7行：异步基础 -->
+      <div class="node foundation">
+        <div class="icon">⏳</div>
+        <div class="title">Promise 三种状态</div>
+        <div class="desc">
+          pending → fulfilled<br>
+          pending → rejected<br>
+          状态不可逆
+        </div>
+      </div>
+      <div class="node foundation">
+        <div class="icon">⏩</div>
+        <div class="title">await (ES8)</div>
+        <div class="desc">异步变同步<br>代码更优雅<br>但会阻塞等待</div>
+      </div>
+      <div class="node foundation">
+        <div class="icon">🚀</div>
+        <div class="title">Promise.all 并行</div>
+        <div class="desc">一起执行多个任务<br>等最慢的完成<br>结果顺序=入参顺序</div>
+      </div>
+      <div class="node foundation">
+        <div class="icon">⏱️</div>
+        <div class="title">串行 vs 并行</div>
+        <div class="desc">
+          串行：2000+500=2500ms<br>
+          并行：max(2000,500)=2000ms<br>
+          <strong style="color:#51cf66">节省500ms!</strong>
+        </div>
+      </div>
+      <div class="node foundation">
+        <div class="icon">📦</div>
+        <div class="title">开发技术栈</div>
+        <div class="desc">
+          Node.js + NestJS<br>
+          LangChain<br>
+          LangGraph (多智能体)
+        </div>
+      </div>
+
+      <!-- 第8行：实战Demo -->
+      <div class="node demo">
+        <div class="icon">📝</div>
+        <div class="title">Demo：index.mjs</div>
+        <div class="desc">ChatOpenAI 基础调用<br>DeepSeek-v4-flash<br>model.invoke()</div>
+      </div>
+      <div class="node demo">
+        <div class="icon">📂</div>
+        <div class="title">Demo：tool.mjs</div>
+        <div class="desc">read_file 工具定义<br>model.bindTools()<br>消息历史管理</div>
+      </div>
+      <div class="node demo wide" style="grid-column: span 3;">
+        <div class="icon">🌐</div>
+        <div class="title">Demo：1.html — Promise.all 并行演示</div>
+        <div class="desc">
+          getWeather() 2秒 &nbsp;+&nbsp; getTweets() 0.5秒 &nbsp;→&nbsp;
+          串行 2.5秒 &nbsp;vs.&nbsp; <strong style="color:#51cf66">并行 2.0秒</strong>
+          &nbsp;|&nbsp; 类比：Agent中多个Tool调用也应该用 Promise.all 并行执行
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 图例 -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot problem"></div> LLM的不足</div>
+    <div class="legend-item"><div class="legend-dot solution"></div> 解决方案/模块</div>
+    <div class="legend-item"><div class="legend-dot framework"></div> LangChain框架</div>
+    <div class="legend-item"><div class="legend-dot foundation"></div> 基础知识</div>
+    <div class="legend-item"><div class="legend-dot demo"></div> 实战Demo</div>
+  </div>
+
+  <!-- 总结语 -->
+  <div class="summary-box">
+    <h3>💡 一句话总结</h3>
+    <p>
+      今天的核心就是理解
+      <span class="highlight">Agent = LLM + Memory + Tool + RAG + MCP + Skills</span>
+      —— 给大模型装上"记忆"让它记住你、"工具手"让它能干活、"知识库"让它懂内部文档、"实时联网"让它知天下事、"技能包"让它处理复杂任务。
+      <br>开发框架用 <span class="highlight">LangChain</span>（单智能体）+ <span class="highlight">LangGraph</span>（多智能体），
+      结合 <span class="highlight">NestJS</span> 后端，打造能落地的 AI 全栈 Agent 产品。
+      <br>性能优化关键：Tool 调用使用 <span class="highlight">Promise.all 并行执行</span>，而非逐个串行 await。
+    </p>
+  </div>
+</div>
+</body>
+</html>
