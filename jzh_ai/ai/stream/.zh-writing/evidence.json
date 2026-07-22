@@ -1,0 +1,63 @@
+{
+  "schema_version": "zh-writing.evidence/v1",
+  "entries": [
+    {
+      "id": "ev-1",
+      "source": "local:readme.md",
+      "type": "material_fact",
+      "claim": "流式输出通过逐个token生成和实时展示来优化长推理等待体验",
+      "location": "readme.md:1-10"
+    },
+    {
+      "id": "ev-2",
+      "source": "local:readme.md",
+      "type": "material_fact",
+      "claim": "流式输出需要客户端发送 stream:true，服务端接受后逐个返回token",
+      "location": "readme.md:18-20"
+    },
+    {
+      "id": "ev-3",
+      "source": "local:readme.md",
+      "type": "material_fact",
+      "claim": "Vue组件由template（模板）、script（脚本）、style（样式）三部分组成",
+      "location": "readme.md:35-43"
+    },
+    {
+      "id": "ev-4",
+      "source": "local:stream-demo/src/App.vue",
+      "type": "material_fact",
+      "claim": "流式读取通过ReadableStream的getReader()逐块读取，用TextDecoder解码二进制为文本",
+      "location": "stream-demo/src/App.vue:78-89"
+    },
+    {
+      "id": "ev-5",
+      "source": "local:stream-demo/src/App.vue",
+      "type": "material_fact",
+      "claim": "项目使用Vite环境变量(VITE_DEEPSEEK_API_KEY)管理API密钥，存储在.env.local中",
+      "location": "stream-demo/src/App.vue:49,57"
+    },
+    {
+      "id": "ev-6",
+      "source": "local:stream-demo/package.json",
+      "type": "material_fact",
+      "claim": "项目使用Vue 3.5.39 + Vite 8.1.1技术栈",
+      "location": "stream-demo/package.json"
+    },
+    {
+      "id": "ev-7",
+      "source": "local:stream-demo/src/App.vue",
+      "type": "material_fact",
+      "claim": "非流式模式下直接response.json()获取完整结果，流式模式下循环读取token流",
+      "location": "stream-demo/src/App.vue:72-98"
+    }
+  ],
+  "external_sources": [],
+  "sensitive_handling": [
+    {
+      "kind": "secret.api_key",
+      "location": "stream-demo/.env.local:1",
+      "action": "redacted_not_read",
+      "confidence": "high"
+    }
+  ]
+}

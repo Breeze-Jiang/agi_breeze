@@ -1,0 +1,36 @@
+{
+  "schema_version": "zh-writing.manifest/v1",
+  "slug": "stream-output",
+  "mode": "full-pipeline",
+  "phase": "learning-summary",
+  "save_root": "c:/Users/38335/Desktop/workspace/jzh_ai/ai/stream",
+  "materials_root": "c:/Users/38335/Desktop/workspace/jzh_ai/ai/stream",
+  "materials_coverage": {
+    "read_files": [
+      "readme.md",
+      "stream-demo/README.md",
+      "stream-demo/package.json",
+      "stream-demo/vite.config.js",
+      "stream-demo/index.html",
+      "stream-demo/src/main.js",
+      "stream-demo/src/App.vue",
+      "stream-demo/src/components/HelloWorld.vue",
+      "stream-demo/src/style.css"
+    ],
+    "skipped": [
+      "stream-demo/node_modules/",
+      "stream-demo/.env.local (contains API key - not read)",
+      "stream-demo/package-lock.json",
+      "stream-demo/public/ (static assets only)",
+      "stream-demo/src/assets/ (static images only)"
+    ],
+    "partial": false
+  },
+  "products": {
+    "summary/learning-summary.md": "draft",
+    "articles/csdn.md": "pending",
+    "articles/juejin.md": "pending"
+  },
+  "created_at": "2026-07-13T15:55:00Z",
+  "updated_at": "2026-07-13T15:55:00Z"
+}
