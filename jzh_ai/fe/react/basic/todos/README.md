@@ -37,3 +37,18 @@
     - getItem(key,)
   - 前端也有类似mysql 数据库
   IndexDB 
+
+## useEffect
+- 组件挂载后执行
+- 组件更新后执行
+- 组件卸载前执行
+- 依赖数组
+
+- useEffect 卸载前的副作用
+组件完整生命周期， willunmount
+return () => {
+  console.log('组件卸载前执行，清除定时器');
+  clearInterval(interval)
+}
+定时器 ， 移除
+不移除会内存泄漏

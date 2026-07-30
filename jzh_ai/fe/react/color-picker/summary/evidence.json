@@ -1,0 +1,50 @@
+{
+  "schema_version": "zh-writing.evidence/v1",
+  "project": "color-picker",
+  "verification_date": "2026-07-30",
+  "verification_scope": "静态材料阅读；未执行项目代码、构建或 lint。",
+  "claims": [
+    {
+      "id": "C1",
+      "claim": "项目使用 Vite 脚本，并直接依赖 React、React DOM；构建脚本为 tsc -b && vite build。",
+      "type": "material_fact",
+      "source": "package.json lines 6-28"
+    },
+    {
+      "id": "C2",
+      "claim": "App 将同一 color 状态传给 ColorBrower 和 ColorPicker，且把 setColor 作为更新回调传入选择器。",
+      "type": "material_fact",
+      "source": "src/App.tsx lines 10-21"
+    },
+    {
+      "id": "C3",
+      "claim": "ColorPicker 的三个 range 输入范围均为 0 到 255，并通过对象展开和 Number 转换更新单个颜色通道。",
+      "type": "material_fact",
+      "source": "src/components/ColorPicker.tsx lines 10-38"
+    },
+    {
+      "id": "C4",
+      "claim": "ColorBrower 通过 rgb(red, green, blue) 字符串设置预览区域背景色。",
+      "type": "material_fact",
+      "source": "src/components/ColorBrower.tsx lines 8-16"
+    },
+    {
+      "id": "C5",
+      "claim": "MemberTable 在挂载后调用 getMemberCollection，将异步结果写入 memberCollection，并映射为带 member.id 键的行。",
+      "type": "material_fact",
+      "source": "src/components/MemberTable.tsx lines 20-47"
+    },
+    {
+      "id": "C6",
+      "claim": "getMemberCollection 返回 Promise<MemberEntity[]>，当前使用 1 秒 setTimeout 和固定数组模拟异步请求。",
+      "type": "material_fact",
+      "source": "src/api/memberApi.ts lines 4-21"
+    },
+    {
+      "id": "C7",
+      "claim": "Color 与 MemberEntity 类型定义分别位于 model 目录。",
+      "type": "material_fact",
+      "source": "src/model/color.ts lines 3-7; src/model/member.ts lines 1-5"
+    }
+  ]
+}
