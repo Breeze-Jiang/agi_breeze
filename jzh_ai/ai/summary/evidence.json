@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-07-16",
+  "scope": "基于本地材料的静态分析；未运行项目。",
+  "claims": [
+    {
+      "claim": "RAG 脚本使用 CheerioWebBaseLoader、RecursiveCharacterTextSplitter、MemoryVectorStore、OpenAIEmbeddings 和 ChatOpenAI 组织网页加载、切分、检索和问答流程。",
+      "type": "材料事实",
+      "source": "agent_in_action/rag_splitter/src/index.mjs"
+    },
+    {
+      "claim": "流式 Vue 页面通过 response.body.getReader()、TextDecoder、data: 行和 JSON.parse() 处理增量内容。",
+      "type": "材料事实",
+      "source": "stream_demo/src/App.vue"
+    },
+    {
+      "claim": "会议纪要 Skill 要求先建立事实边界，再去噪、归纳主题和提取行动项，且禁止补全原文未给出的信息。",
+      "type": "材料事实",
+      "source": "skills/hys/meeting/.meeting/SKILL.md"
+    },
+    {
+      "claim": "文章代码结论均未进行运行验证。",
+      "type": "验证状态",
+      "source": "本次写作过程"
+    }
+  ]
+}
