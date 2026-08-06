@@ -1,0 +1,37 @@
+{
+  "schema_version": "zh-writing.evidence/v1",
+  "generated_from": "local static analysis",
+  "runtime_status": "运行未验证",
+  "evidence": [
+    {
+      "id": "multi-page-links",
+      "claim": "示例通过 index.html 与 about.html 的普通链接展示多页跳转。",
+      "source": "demo/index.html#L12-L13; demo/about.html#L12-L13",
+      "type": "材料事实"
+    },
+    {
+      "id": "hashchange-anchor",
+      "claim": "锚点示例监听 hashchange 并输出新旧 URL。",
+      "source": "demo2/demo.html#L9-L21",
+      "type": "材料事实"
+    },
+    {
+      "id": "router-table",
+      "claim": "Hashrouter 通过 routers 对象和 register 方法保存路径到回调函数的映射。",
+      "source": "demo2/index.html#L22-L35",
+      "type": "材料事实"
+    },
+    {
+      "id": "hash-load-flow",
+      "claim": "load 使用 location.hash.slice(1) 获取路径，从 routers 中取回调并执行。",
+      "source": "demo2/index.html#L36-L45",
+      "type": "材料事实"
+    },
+    {
+      "id": "empty-handler-risk",
+      "claim": "空 hash 或未注册路径时 handler 可能为 undefined，随后调用 handler.call(this) 存在运行时错误风险。",
+      "source": "demo2/index.html#L38-L45",
+      "type": "合理推断"
+    }
+  ]
+}
