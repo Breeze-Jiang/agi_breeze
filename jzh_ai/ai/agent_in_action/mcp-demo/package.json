@@ -4,7 +4,7 @@
   "description": "- 这里的 tool 有什么问题？\r 1.只能在我们这个项目里面使用，不能在其他项目里面使用\r 2.node写的 ，如果用java /python /rust 写的tool呢",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test test/protocol.test.mjs"
   },
   "keywords": [],
   "author": "",

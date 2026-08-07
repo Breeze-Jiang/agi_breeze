@@ -1,4 +1,6 @@
 import 'dotenv/config'
+import { fileURLToPath } from 'node:url'
+import { resolve } from 'node:path'
 //agent 配置 mcp client 可以配置多个mcp server 的client
 import {MultiServerMCPClient} from '@langchain/mcp-adapters'
 import {ChatOpenAI} from '@langchain/openai'
@@ -10,40 +12,31 @@ import {
   ToolMessage
 } from '@langchain/core/messages'
 
+const serverPath = fileURLToPath(new URL('./my-mcp-server.mjs', import.meta.url))
 
-const mcpClient = new MultiServerMCPClient({
-  mcpServers:{'my-mcp-server':{
-    command:'node',
-    args:['C:\\Users\\38335\\Desktop\\workspace\\jzh_ai\\ai\\agent_in_action\\mcp-demo\\my-mcp-server.mjs']
-  }}
-})
-const model = new ChatOpenAI({
-  modelName:'deepseek-v4-pro',
-  apiKey: process.env.DEEPSEEK_API_KEY,
-  temperature: 0,
-  configuration: {
-    baseURL: 'https://api.deepseek.com/v1',
-  },
-});
-
-const tools = await mcpClient.getTools()
-
-const res = await mcpClient.listResources()
-let resourcesContent = ''
-for(const [serverName,resources] of Object.entries(res)){
-  for(const resource of resources){
-    const content = await mcpClient.readResource(
-      serverName,
-      resource.uri
-    )
-    resourcesContent += content[0].text + '\n'
-  }
+export function createMcpClient() {
+  return new MultiServerMCPClient({
+    mcpServers:{'my-mcp-server':{
+      command: process.execPath,
+      args:[serverPath],
+    }},
+  })
 }
-console.log(resourcesContent,'------------------------------')
 
-const modelWithTools = model.bindTools(tools)
+export async function loadResources(mcpClient) {
+  const resources = await mcpClient.listResources()
+  let resourcesContent = ''
+  for(const [serverName,serverResources] of Object.entries(resources)){
+    for(const resource of serverResources){
+      const content = await mcpClient.readResource(serverName, resource.uri)
+      resourcesContent += content[0].text + '\n'
+    }
+  }
+  return resourcesContent
+}
 
-async function runAgentWithTools(query,maxIterations=30){
+export async function runAgentWithTools(query, { tools, model, resourcesContent, maxIterations = 30 }){
+  const modelWithTools = model.bindTools(tools)
   const messages = [
     new HumanMessage(query),
     new SystemMessage(resourcesContent)
@@ -78,15 +71,36 @@ async function runAgentWithTools(query,maxIterations=30){
   return messages[messages.length-1].content
 }
 
-// await runAgentWithTools('查询用户ID为002的详细信息')
-await runAgentWithTools('MCP Server 的使用指南是什么？')
-//关闭所有 MCP 子进程 与通信的通道 释放进程资源
-// 关闭和 MCP server 的通信通道
-// my-mcp-server.mjs 被启动了， 手动关闭进程， 释放相关资源， 避免脚本挂着不退出
-// node langchain-mcp-test.mjs 会启动一个进程
-// 启动一个子进程 child_process client 子进程连接 my-mcp-server.mjs 
-// 主进程通stdio 和 他们通话 （先和子进程通话， 再和mcp server 通话）
-// close() 把这个链接和子进程一起关掉
-await mcpClient.close();
+export async function main() {
+  if (!process.env.DEEPSEEK_API_KEY) {
+    throw new Error('Missing required environment variable: DEEPSEEK_API_KEY')
+  }
+  const mcpClient = createMcpClient()
+  try {
+    const tools = await mcpClient.getTools()
+    const resourcesContent = await loadResources(mcpClient)
+    const model = new ChatOpenAI({
+      modelName:'deepseek-v4-pro',
+      apiKey: process.env.DEEPSEEK_API_KEY,
+      temperature: 0,
+      configuration: { baseURL: 'https://api.deepseek.com/v1' },
+    })
+    return await runAgentWithTools('MCP Server 的使用指南是什么？', {
+      tools,
+      model,
+      resourcesContent,
+    })
+  } finally {
+    await mcpClient.close()
+  }
+}
+
+const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])
+if (isDirectRun) {
+  main().catch((error) => {
+    console.error(error.message)
+    process.exitCode = 1
+  })
+}
 
 

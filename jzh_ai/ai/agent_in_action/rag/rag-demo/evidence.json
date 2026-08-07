@@ -1,0 +1,67 @@
+{
+  "project": "rag-demo",
+  "generated_at": "2026-07-15",
+  "materials": [
+    {
+      "source": "readme.md",
+      "type": "local_material",
+      "supports": [
+        "项目主题是 RAG 入门学习",
+        "readme 区分了 retriever.invoke 与 similaritySearchWithScore 的用途",
+        "文档、embedding、向量库、检索器构成作者理解的主链路"
+      ]
+    },
+    {
+      "source": "package.json",
+      "type": "local_material",
+      "supports": [
+        "项目依赖 dotenv、@langchain/openai、@langchain/core、@langchain/classic",
+        "项目核心实现依赖 LangChain 生态"
+      ]
+    },
+    {
+      "source": "src/index.mjs",
+      "type": "local_material",
+      "supports": [
+        "项目使用 ChatOpenAI 与 OpenAIEmbeddings 分别处理生成和向量化",
+        "知识库通过多个 Document 对象定义",
+        "向量库使用 MemoryVectorStore.fromDocuments 构建",
+        "检索器通过 vectorStore.asRetriever({ k: 3 }) 构建",
+        "代码同时展示 retriever.invoke(question) 和 similaritySearchWithScore(question, 3)",
+        "最终通过拼接检索上下文到 prompt 并调用 model.invoke(prompt) 生成回答"
+      ]
+    },
+    {
+      "source": "C:\\Users\\38335\\.claude\\skills\\zh-writing\\references\\platform-csdn.md",
+      "type": "writing_rule",
+      "supports": [
+        "CSDN 版建议 3 到 5 个标签",
+        "CSDN 版可使用二级标题组织主要目录项，主要目录项不超过 12 个",
+        "代码块超过 60 行需要拆分或移入附录"
+      ]
+    },
+    {
+      "source": "C:\\Users\\38335\\.claude\\skills\\zh-writing\\references\\platform-juejin.md",
+      "type": "writing_rule",
+      "supports": [
+        "掘金版不使用 [TOC] 语法",
+        "掘金版强调更高信息密度与技术边界说明",
+        "代码块超过 60 行需要拆分或移入附录"
+      ]
+    },
+    {
+      "source": "C:\\Users\\38335\\.claude\\skills\\zh-writing\\references\\quality-gates.md",
+      "type": "writing_rule",
+      "supports": [
+        "文章中代码必须标注运行未验证",
+        "静态分析不能表述为已跑通或复制即用",
+        "重要结论需要证据映射"
+      ]
+    }
+  ],
+  "unknowns": [
+    "未运行项目代码，因此没有真实输出结果或效果验证",
+    "未读取 .env 具体值，因此模型名称和服务配置只知道来自环境变量",
+    "Node.js 版本未在材料中提供"
+  ]
+}

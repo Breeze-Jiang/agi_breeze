@@ -1,0 +1,22 @@
+{
+	"dependencies": {
+		"@langchain/classic": "^1.0.40",
+		"@langchain/community": "^1.1.29",
+		"@langchain/openai": "^1.5.5",
+		"@langchain/textsplitters": "^1.0.1",
+		"axios": "^1.18.1",
+		"cheerio": "^1.2.0",
+		"dotenv": "^17.4.2"
+	},
+	"name": "rag_splitter",
+	"version": "1.0.0",
+	"description": "- 知识库 放的知识\r   知识的来源很多，一个word文档，一个pdf文件，一个bilibili适配，一个url，一个挺靠谱的twitter\r   各种格式的问而建 -> 向量化前的document对象 -> 向量化后的向量\r    不能直接创建document对象",
+	"main": "index.js",
+	"scripts": {
+		"test": "node --test test/rag-core.test.mjs"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"type": "commonjs"
+}

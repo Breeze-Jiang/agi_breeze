@@ -1,0 +1,35 @@
+{
+  "schema_version": "zh-writing.evidence/v1",
+  "created_at": "2026-07-17",
+  "scope": "rag_splitter README and src static analysis; no code execution or network requests",
+  "evidence": [
+    {
+      "id": "E1",
+      "type": "local-source",
+      "source": "readme.md",
+      "supports": "The learning material frames loaders as a way to turn varied knowledge sources into documents, and describes document content/metadata plus text splitting concepts.",
+      "verification": "Read locally"
+    },
+    {
+      "id": "E2",
+      "type": "local-source",
+      "source": "src/crawl.mjs",
+      "supports": "The manual path uses axios to fetch HTML, Cheerio to load it, and the .main-area p selector to extract text.",
+      "verification": "Static read only; runtime unverified"
+    },
+    {
+      "id": "E3",
+      "type": "local-source",
+      "source": "src/index.mjs",
+      "supports": "The LangChain path uses CheerioWebBaseLoader and RecursiveCharacterTextSplitter with chunkSize 400, separators Chinese full stop/question/exclamation marks, and chunkOverlap 100.",
+      "verification": "Static read only; runtime unverified"
+    },
+    {
+      "id": "E4",
+      "type": "unknown",
+      "source": "Not provided in requested materials",
+      "supports": "Runtime results, dependency versions, target URL availability, and current selector validity are not established.",
+      "verification": "Not verified"
+    }
+  ]
+}
