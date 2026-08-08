@@ -1,0 +1,13 @@
+{
+  "project": "react/basic/ref-demo/ref-worker-demo",
+  "verification": "static-source-review-only",
+  "evidence": [
+    {"id":"E1","source":"ref-worker-demo/src/App.jsx#L10-L18","claim":"App 使用 useRef 保存 Worker 实例，并用 new Worker(new URL('../worker.js', import.meta.url)) 创建线程。"},
+    {"id":"E2","source":"ref-worker-demo/src/App.jsx#L20-L31","claim":"主线程通过 onmessage 读取 e.data.result 更新 result/loading，并在 Effect cleanup 中 terminate Worker、清空 ref。"},
+    {"id":"E3","source":"ref-worker-demo/src/App.jsx#L43-L55","claim":"点击操作设置 loading 后向 Worker 发送 { num: 88 }，页面按 loading 和 result 渲染。"},
+    {"id":"E4","source":"ref-worker-demo/worker.js#L4-L12","claim":"Worker 接收主线程消息，进行循环计算，并以 { result: sum } 返回结果。"},
+    {"id":"E5","source":"ref-demo/readme.md#L75-L83","claim":"笔记将 useRef 定位为 Worker 实例的持久存储，并说明 Worker 不能直接访问 DOM，只能消息通信。"},
+    {"id":"E6","source":"ref-worker-demo/src/App.jsx#L53 + worker.js#L8","claim":"静态发现界面文案为五亿次计算，而实际循环上限为 5000000000，二者不一致。"},
+    {"id":"E7","source":"ref-worker-demo/src/App.jsx#L20-L26","claim":"静态发现只设置 onmessage，未见错误处理；Worker 失败时 loading 恢复行为未验证。"}
+  ]
+}

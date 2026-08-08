@@ -1,0 +1,27 @@
+{
+  "topic": "React useRef 与 Web Worker",
+  "verification": "运行未验证，仅静态源码整理",
+  "facts": [
+    "项目是 React + Vite 工程，package.json 使用 React 19.2.7 和 Vite 8.1.1。",
+    "App 使用 useRef(null) 保存 Worker 实例。",
+    "Worker 创建表达式是 new Worker(new URL('../worker.js', import.meta.url))。",
+    "Worker 创建和 onmessage 注册位于 useEffect 的空依赖 Effect 中。",
+    "主线程点击任务时设置 loading 为 true。",
+    "主线程发送 { num: 88 } 给 Worker。",
+    "Worker 使用 self.onmessage 接收数据。",
+    "Worker 从 e.data 中读取 num。",
+    "Worker 执行循环累计计算 sum。",
+    "Worker 通过 self.postMessage({ result: sum }) 返回结果。",
+    "主线程从 e.data.result 读取计算结果。",
+    "主线程调用 setResult 和 setLoading(false) 更新页面状态。",
+    "组件卸载时调用 workerRef.current.terminate()。",
+    "清理后将 workerRef.current 设置为 null。",
+    "Worker 不能直接访问 DOM，主线程负责 React 页面更新。",
+    "postMessage/onmessage 构成主线程和 Worker 的消息通信。",
+    "笔记说明 Event Loop 是异步任务调度机制，不等价于新线程。",
+    "静态发现页面文案写五亿次，Worker 循环实际上使用 5000000000。",
+    "静态推断当前 sum 可能超过 Number.MAX_SAFE_INTEGER，整数精度需关注。",
+    "代码未见 onerror 或 onmessageerror，失败时 loading 行为运行未验证。",
+    "笔记中的 './worker.js' 是通用路径示例，当前源码实际使用 '../worker.js'。"
+  ]
+}

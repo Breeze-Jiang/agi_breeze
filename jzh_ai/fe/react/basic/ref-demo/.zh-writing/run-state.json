@@ -1,0 +1,23 @@
+{
+  "route": "full-pipeline",
+  "status": "completed",
+  "task_root": "react/basic/ref-demo",
+  "outputs": {
+    "summary": "summary/learning-summary.md",
+    "evidence": "summary/evidence.json",
+    "csdn": "articles/csdn/react-useref-web-worker.md",
+    "juejin": "articles/juejin/react-web-worker-thread-boundary.md",
+    "handdrawn_prompt": "images/cover-handdrawn-prompt.md",
+    "isometric_prompt": "images/cover-isometric-3d-prompt.md"
+  },
+  "verification": {
+    "csdn": {"exit_code": 0, "errors": 0, "warnings": ["peer.code_drift", "peer.number_drift"]},
+    "juejin": {"exit_code": 0, "errors": 0, "warnings": ["peer.code_drift", "peer.number_drift"]}
+  },
+  "runtime": "not executed",
+  "static_findings": [
+    "UI 文案的五亿次与 worker.js 的 5000000000 次不一致",
+    "计算结果可能超过 Number.MAX_SAFE_INTEGER",
+    "未见 Worker 错误处理，失败时 loading 行为未验证"
+  ]
+}
