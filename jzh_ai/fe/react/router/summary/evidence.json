@@ -1,0 +1,35 @@
+{
+  "scope": "react/router/react-router-demo，静态阅读，运行未验证",
+  "evidence": [
+    {
+      "id": "E1",
+      "claim": "项目使用 BrowserRouter、Routes 和 Route 定义页面路由，并包含嵌套路由、动态路由、重定向和通配 404。",
+      "source": "react-router-demo/src/App.jsx:1-8, 33-66"
+    },
+    {
+      "id": "E2",
+      "claim": "页面采用 React.lazy 与 Suspense 实现路由级懒加载。",
+      "source": "react-router-demo/src/App.jsx:10-13, 20-29, 38"
+    },
+    {
+      "id": "E3",
+      "claim": "ProtectRoute 从 localStorage 的 isLogin 读取登录标记，未登录时使用 Navigate 跳转登录页。",
+      "source": "react-router-demo/src/ProtectRoute.jsx:5-22"
+    },
+    {
+      "id": "E4",
+      "claim": "登录页通过 useLocation 读取 state.from，通过 FormData 读取表单字段，登录成功后保存 isLogin 并 navigate(from, { replace: true })。",
+      "source": "react-router-demo/src/pages/Login/index.jsx:10-35"
+    },
+    {
+      "id": "E5",
+      "claim": "ProtectRoute 当前使用 location.pathname 但未声明 location，属于静态发现错误。",
+      "source": "react-router-demo/src/ProtectRoute.jsx:1-16"
+    },
+    {
+      "id": "E6",
+      "claim": "404 页面在 effect 内设置 3 秒跳转，但当前没有清理 timeout。",
+      "source": "react-router-demo/src/pages/NotFound/index.jsx:8-19"
+    }
+  ]
+}
