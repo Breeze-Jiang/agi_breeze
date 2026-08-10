@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=
+  , initial-scale=1.0">
+  <title>Singleton Pattern</title>
+</head>
+<body>
+  <button id="openBtn">打开新网页</button>
+  <script>
+    class Popup {
+      static ins; // 单例实例， 静态属性 不需要先new Popup.ins
+      static getInstance() {
+        if (!Popup.ins) {
+          Popup.ins = new Popup();
+        }
+        return Popup.ins;
+      }
+    }
+    
+    const a = Popup.getInstance();// 单例实例 , 代替new
+    const b = Popup.getInstance();// 单例实例 , 代替new
+    console.log(a === b); // true
+
+    const openBtn = document.getElementById("openBtn");
+    openBtn.addEventListener("click", () => {
+      // window.open("https://www.baidu.com ", "_blank");
+      a.open("https://www.baidu.com");
+    });
+  </script>
+</body>
+</html>
