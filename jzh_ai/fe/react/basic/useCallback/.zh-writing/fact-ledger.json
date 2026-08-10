@@ -1,0 +1,39 @@
+{
+  "topic": "React memo、useCallback 与 useMemo",
+  "reader_question": "父组件有多个状态时，如何减少子组件不必要的重新渲染？useCallback 和 useMemo 分别解决什么问题？",
+  "core_judgment": "先用 memo 让子组件基于 Props 进行跳过判断；当传递函数 Props 时，用 useCallback 稳定函数引用；当存在昂贵计算时，用 useMemo 缓存计算结果。当前 Demo 实际只覆盖 useState + memo，没有真正使用 useCallback。",
+  "facts": [
+    "项目是 React + Vite 工程。",
+    "App.jsx 导入 useState 和 memo。",
+    "App.jsx 没有导入或调用 useCallback。",
+    "App.jsx 没有导入或调用 useMemo。",
+    "RegularChild 使用 memo 包装。",
+    "RegularChild 接收 name 字符串 Props。",
+    "RegularChild 打印 RegularChild 组件渲染。",
+    "App 拥有 count state，初始值为 0。",
+    "App 拥有 name state，初始值为 少林队。",
+    "增加按钮调用 setCount(count + 1)。",
+    "改变名字按钮调用 setName('峨眉队')。",
+    "RegularChild 只接收 name，没有接收 count。",
+    "App 打印 App 组件渲染。",
+    "memo 默认进行 Props 浅层比较。",
+    "name 是字符串，当前比较不涉及对象引用。",
+    "count 变化时 App 会重新渲染。",
+    "name 未变化时 memo 理论上可以跳过 RegularChild。",
+    "name 变化时 RegularChild 需要重新渲染。",
+    "main.jsx 导入 StrictMode。",
+    "main.jsx 当前没有使用 StrictMode 包裹 App。",
+    "README 提出父组件多状态会带来子组件无效渲染问题。",
+    "memo 是 README 提出的属性比对优化方向。",
+    "useCallback 缓存函数引用。",
+    "useMemo 缓存计算结果。",
+    "useCallback 常与 memo 配合稳定函数 Props。",
+    "普通函数每次父组件渲染可能生成新的函数引用。",
+    "当前项目运行、构建、lint 均未验证。"
+  ],
+  "assets": [
+    "父组件多状态与 memo 的关系示意",
+    "普通函数 Props 与 useCallback 稳定引用对比",
+    "useMemo 缓存昂贵计算的最小示例"
+  ]
+}

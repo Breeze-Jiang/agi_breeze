@@ -1,0 +1,17 @@
+{
+  "topic": "React memo、useCallback 与 useMemo 的关系",
+  "reader_question": "为什么父组件一个状态变化会影响子组件？如何判断和减少无效渲染？",
+  "core_judgment": "memo 负责 Props 比较和跳过判断，useCallback 负责稳定函数引用，useMemo 负责缓存计算结果；当前示例重点是 memo，目录名虽为 useCallback 但源码尚未实现函数 Props 场景。",
+  "evidence_ids": ["E1", "E2", "E3", "E4", "E5"],
+  "unique_evidence": [
+    "当前 App 的 RegularChild 只接收 name，而 App 同时维护 count 和 name。",
+    "main.jsx 导入 StrictMode 但没有实际使用，因此不能把当前重复日志直接归因于 StrictMode。",
+    "当前源码真实覆盖 useState + memo，useCallback/useMemo 只作为主题补充。"
+  ],
+  "reader_assets": [
+    "父子组件渲染调用链",
+    "memo 与函数引用的对比表",
+    "面试用一句话总结"
+  ],
+  "runtime_boundary": "文章代码基于静态源码整理，运行未验证。"
+}

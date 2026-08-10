@@ -1,0 +1,12 @@
+{
+  "project": "react/basic/useCallback/callback-demo",
+  "verification": "static-source-review-only",
+  "evidence": [
+    {"id":"E1","source":"callback-demo/src/App.jsx#L9-L16","claim":"RegularChild 使用 memo 包装，只接收 name 字符串 Props，并记录组件渲染日志。"},
+    {"id":"E2","source":"callback-demo/src/App.jsx#L18-L27","claim":"App 有 count 与 name 两个 state，两个按钮分别更新它们，RegularChild 只接收 name。"},
+    {"id":"E3","source":"callback-demo/src/main.jsx#L1-L9","claim":"入口导入 StrictMode 但没有使用 StrictMode 包裹 App。"},
+    {"id":"E4","source":"useCallback/readme.md#L6-L12","claim":"笔记提出父组件多状态、子组件依赖部分状态时可能产生无效子组件渲染，并将 memo 与属性比较作为优化方向。"},
+    {"id":"E5","source":"callback-demo/src/App.jsx#L1-L4","claim":"当前源码导入 useState 和 memo，没有导入或调用 useCallback、useMemo。"},
+    {"id":"E6","source":"callback-demo/package.json#L7-L25","claim":"项目提供 dev/build/lint/preview 脚本，技术栈为 React 19.2.7 与 Vite 8.1.1。"}
+  ]
+}

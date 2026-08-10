@@ -1,0 +1,5 @@
+{
+  "csdn": {"exit_code": 0, "errors": [], "warnings": ["peer.code_drift"]},
+  "juejin": {"exit_code": 0, "errors": [], "warnings": ["peer.code_drift"], "skipped_checks": ["platform.tags", "platform.toc"]},
+  "runtime": "not executed"
+}

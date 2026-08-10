@@ -1,0 +1,24 @@
+{
+  "topic": "React Context 与自定义 Hook",
+  "verification": "运行未验证，仅静态源码整理",
+  "facts": [
+    "项目使用 React 19.2.7、React DOM 19.2.7 和 Vite 8.1.1。",
+    "ThemeContext 通过 createContext('light') 创建。",
+    "createContext 的 light 为没有对应 Provider 时的默认值。",
+    "useTheme 返回 useContext(ThemeContext)。",
+    "Page 和 Child 都调用 useTheme 读取主题。",
+    "Child 将主题用于 button 的 className 和按钮文本。",
+    "useMouse 用 useState 分别保存 x 与 y，初始均为 0。",
+    "useMouse 的 Effect 在 document 上添加 mousemove 监听。",
+    "mousemove 回调使用 e.clientX 和 e.clientY 更新坐标。",
+    "useMouse 在 Effect 的返回函数中移除同一个 handleMouseMove 监听器。",
+    "useMouse 返回对象 { x, y }。",
+    "App 使用 const { x, y } = useMouse() 接收坐标。",
+    "App 在 x 和 y 都为真值时显示坐标，否则显示鼠标未移动。",
+    "静态发现 App 导入 useState/useEffect 但未使用；未执行 lint。",
+    "Context 用于减少深层组件树的 Props 层层传递。",
+    "自定义 Hook 用于复用状态和副作用等逻辑，不直接复用 UI。",
+    "Provider 的 value 被最近的消费者读取，并覆盖默认值。",
+    "Provider 位置未在本次 App.jsx 静态代码中出现，主题完整挂载链路未验证。"
+  ]
+}

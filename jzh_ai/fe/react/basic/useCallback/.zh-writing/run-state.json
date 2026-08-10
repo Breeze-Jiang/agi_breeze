@@ -1,0 +1,19 @@
+{
+  "route": "full-pipeline",
+  "status": "completed",
+  "task_root": "react/basic/useCallback",
+  "outputs": {
+    "summary": "summary/learning-summary.md",
+    "evidence": "summary/evidence.json",
+    "csdn": "articles/csdn/react-memo-usecallback-usememo.md",
+    "juejin": "articles/juejin/react-memo-callback-rendering.md",
+    "handdrawn_prompt": "images/cover-handdrawn-prompt.md",
+    "isometric_prompt": "images/cover-isometric-3d-prompt.md"
+  },
+  "verification": {
+    "csdn": {"exit_code": 0, "errors": 0, "warnings": ["peer.code_drift"]},
+    "juejin": {"exit_code": 0, "errors": 0, "warnings": ["peer.code_drift"], "skipped": ["platform.tags", "platform.toc"]}
+  },
+  "runtime": "not executed",
+  "static_scope_note": "当前源码实际使用 useState + memo，未实现 useCallback/useMemo；文章将两者作为主题补充。"
+}

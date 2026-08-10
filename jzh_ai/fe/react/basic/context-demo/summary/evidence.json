@@ -1,0 +1,41 @@
+{
+  "project": "react/basic/context-demo",
+  "verification": "static-source-review-only",
+  "evidence": [
+    {
+      "id": "E1",
+      "source": "contextdemo/src/ThemeContext.jsx#L1-L4",
+      "claim": "ThemeContext 由 createContext('light') 创建，默认主题值为 light。"
+    },
+    {
+      "id": "E2",
+      "source": "contextdemo/src/hooks/useTheme.js#L4-L10",
+      "claim": "useTheme 封装 useContext(ThemeContext)，供组件读取主题 Context。"
+    },
+    {
+      "id": "E3",
+      "source": "contextdemo/src/components/Page.jsx#L1-L12",
+      "claim": "Page 通过 useTheme 读取主题，并渲染 Child。"
+    },
+    {
+      "id": "E4",
+      "source": "contextdemo/src/components/Child.jsx#L1-L12",
+      "claim": "Child 通过 useTheme 读取主题，并将主题用于按钮 className 和文本。"
+    },
+    {
+      "id": "E5",
+      "source": "contextdemo/src/hooks/useMouse.js#L1-L16",
+      "claim": "useMouse 管理 x/y 状态，在 document 上监听 mousemove，并在 Effect 清理函数中移除监听。"
+    },
+    {
+      "id": "E6",
+      "source": "contextdemo/src/App.jsx#L5-L13",
+      "claim": "App 调用 useMouse 并以对象解构得到 x/y，条件显示鼠标坐标或未移动提示。"
+    },
+    {
+      "id": "E7",
+      "source": "contextdemo/src/App.jsx#L1-L4",
+      "claim": "静态发现 useState 与 useEffect 被导入但在 App 内未使用；未运行 lint，因此是否报错未验证。"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "route": "full-pipeline",
+  "status": "completed",
+  "task_root": "react/basic/context-demo",
+  "outputs": {
+    "summary": "summary/learning-summary.md",
+    "evidence": "summary/evidence.json",
+    "csdn": "articles/csdn/react-context-custom-hooks.md",
+    "juejin": "articles/juejin/react-context-mouse-hook.md",
+    "handdrawn_prompt": "images/cover-handdrawn-prompt.md",
+    "isometric_prompt": "images/cover-isometric-3d-prompt.md"
+  },
+  "verification": {
+    "csdn": {"exit_code": 0, "errors": 0, "warnings": ["peer.code_drift"]},
+    "juejin": {"exit_code": 0, "errors": 0, "warnings": ["peer.code_drift"]}
+  },
+  "runtime": "not executed"
+}
