@@ -1,75 +1,52 @@
-# React + TypeScript + Vite
+---
+title: DeepSeek-R1 WebGPU
+emoji: 🧠
+colorFrom: red
+colorTo: blue
+sdk: static
+pinned: false
+license: apache-2.0
+short_description: Next-generation reasoning model that runs locally in-browser
+thumbnail: >-
+  https://huggingface.co/spaces/webml-community/deepseek-r1-webgpu/resolve/main/banner.png
+---
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# DeepSeek-R1 WebGPU
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Follow the steps below to set up and run the application.
 
-## React Compiler
+### 1. Clone the Repository
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Clone the examples repository from GitHub:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```sh
+git clone https://github.com/huggingface/transformers.js-examples.git
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 2. Navigate to the Project Directory
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Change your working directory to the `deepseek-r1-webgpu` folder:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```sh
+cd transformers.js-examples/deepseek-r1-webgpu
 ```
+
+### 3. Install Dependencies
+
+Install the necessary dependencies using npm:
+
+```sh
+npm i
+```
+
+### 4. Run the Development Server
+
+Start the development server:
+
+```sh
+npm run dev
+```
+
+The application should now be running locally. Open your browser and go to `http://localhost:5173` to see it in action.

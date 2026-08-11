@@ -79,6 +79,8 @@ function App() {
           break;
 
         case "initiate":
+          // 给函数为了获取最新状态
+          // 多个文件并发下载时，进度回调频繁触发
           setProgressItems((prev) => [...prev, e.data]);
           break;
 
@@ -197,7 +199,7 @@ function App() {
         <div className="h-full overflow-auto scrollbar-thin flex justify-center items-center flex-col relative">
           <div className="flex flex-col items-center mb-1 max-w-[400px] text-center">
             <img
-              src="logo.png"
+              src="../public/logo.png"
               width="80%"
               height="auto"
               className="block drop-shadow-lg bg-transparent"

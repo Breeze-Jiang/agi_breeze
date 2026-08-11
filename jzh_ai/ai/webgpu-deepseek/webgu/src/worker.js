@@ -39,11 +39,15 @@ async function check() {
 class TextGenerationPipeline {
   static model_id = "onnx-community/DeepSeek-R1-Distill-Qwen-1.5B-ONNX";
   // 单例模式 llm 只需要初始化一次 ， 后面可以一直用， 实例化特别耗性能， 单例管理
+  // 下载
+  // 
   static async getInstance(progress_callback = null) {
     this.tokenizer ??= AutoTokenizer.from_pretrained(this.model_id, {
-      progress_callback,
+      progress_callback,  
+    //   (x) => {
+    // self.postMessage(x);
     });
-    
+    // console.log(this.tokenizer,"-----------------");
     this.model ??= AutoModelForCausalLM.from_pretrained(this.model_id, {
       dtype: "q4f16",
       device: "webgpu",
@@ -63,7 +67,7 @@ async function generate(messages) {
 
   const inputs = tokenizer.apply_chat_template(messages, {
     add_generation_prompt: true,
-    return_dict: true,
+    return_dict: true,   
   });
 
   // 151648: <think>

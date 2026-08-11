@@ -37,8 +37,14 @@ OOP 面向对象编程， 总结出来的23中解决特定问题的模式
 类只实例化一次， 全局只有一个实例。
 用于解决全局变量的问题，以及全局状态的问题
 
-
-
+## load 
+- 空值合并运算符 ??= 用于在变量为null 或 undefined 时， 赋值给变量
+  用于避免重复赋值，保持变量的原始值。AutoTokenizer.from_pretrained() 方法， 用于加载模型的 tokenizer。 开销较大
+- web 异步下载
+  AutoTokenizer.from_pretrained()   promise
+  文件比较大， 文件的chunk 慢慢到达， 提供一个process_callback 回调函数， 用于处理下载的chunk。
+  AutoModelForCausalLM.from_pretrained()   promise
+  Promise.all() 用于等待多个promise 完成， 然后再执行后续操作
 
 
 
