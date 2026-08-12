@@ -6,7 +6,7 @@ import StopIcon from "./components/icons/StopIcon";
 import Progress from "./components/Progress";
 
 const IS_WEBGPU_AVAILABLE = !!navigator.gpu;
-const STICKY_SCROLL_THRESHOLD = 120;
+const STICKY_SCROLL_THRESHOLD = 120; // 距底部的距离
 const EXAMPLES = [
   "Solve the equation x^2 - 3x + 2 = 0",
   "Lily is three times older than her son. In 15 years, she will be twice as old as him. How old is she now?",
@@ -14,24 +14,30 @@ const EXAMPLES = [
 ];
 
 function App() {
-  // Create a reference to the worker object.
-  const worker = useRef(null);
+  // Create a reference to the worker object. 
+  const worker = useRef(null);// 创建一个worker线程
 
-  const textareaRef = useRef(null);
-  const chatContainerRef = useRef(null);
+  const textareaRef = useRef(null);// useRef 创建一个"钩子"，直接抓到页面上真实的 <textarea> DOM 元素，用来操作它（比如调整高度、聚焦等）。
+  const chatContainerRef = useRef(null); // 和 textareaRef 是同一个东西：给聊天消息容器贴个钩子，用来读取滚动位置 + 控制自动滚动。
 
   // Model loading and progress
-  const [status, setStatus] = useState(null);
-  const [error, setError] = useState(null);
-  const [loadingMessage, setLoadingMessage] = useState("");
-  const [progressItems, setProgressItems] = useState([]);
-  const [isRunning, setIsRunning] = useState(false);
+  const [status, setStatus] = useState(null); // 状态
+  const [error, setError] = useState(null);   // 报错
+  const [loadingMessage, setLoadingMessage] = useState(""); // 加载阶段的文字提示
+  const [progressItems, setProgressItems] = useState([]);   // 每个文件的进度条列表
+// 这里的progressItems 是一个数组，包含了每个文件的进度信息。如下:
+// [
+//   { file: "tokenizer.json", progress: 100, loaded: 10000, total: 10000 },
+//   { file: "model.onnx",     progress: 30,  loaded: 1500000, total: 5000000 },
+//   { file: "config.json",    progress: 100, loaded: 2000, total: 2000 },
+// ]
+  const [isRunning, setIsRunning] = useState(false);        // 模型是不是正在生成文字
 
   // Inputs and outputs
-  const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([]);
-  const [tps, setTps] = useState(null);
-  const [numTokens, setNumTokens] = useState(null);
+  const [input, setInput] = useState("");                   // 输入框里用户正在打的字
+  const [messages, setMessages] = useState([]);             // 整个聊天记录（最重要的 state）
+  const [tps, setTps] = useState(null);                     // 生成速度（每秒多少 token）
+  const [numTokens, setNumTokens] = useState(null);         // 回答一共生成了多少 token
 
   function onEnter(message) {
     setMessages((prev) => [...prev, { role: "user", content: message }]);
@@ -72,6 +78,10 @@ function App() {
     // Create a callback function for messages from the worker thread.
     const onMessageReceived = (e) => {
       switch (e.data.status) {
+// 模型加载
+
+
+
         case "loading":
           // Model file start load: add a new progress item to the list.
           setStatus("loading");
@@ -107,6 +117,9 @@ function App() {
           // Pipeline ready: the worker is ready to accept messages.
           setStatus("ready");
           break;
+// 开始推理
+
+
 
         case "start":
           {
@@ -126,12 +139,14 @@ function App() {
             setTps(tps);
             setNumTokens(numTokens);
             setMessages((prev) => {
-              const cloned = [...prev];
-              const last = cloned.at(-1);
+              const cloned = [...prev]; // 1. 浅拷贝数组（不直接改原数组）
+              const last = cloned.at(-1); //  取最后一条（即助手的回答）
               const data = {
                 ...last,
                 content: last.content + output,
               };
+//               - data.answerIndex === undefined （之前没记过分界点，只记第一次）
+//               - state === "answering" （Worker 说刚从 thinking 切到 answering）
               if (data.answerIndex === undefined && state === "answering") {
                 // When state changes to answering, we set the answerIndex
                 data.answerIndex = last.content.length;
@@ -169,6 +184,7 @@ function App() {
   }, []);
 
   // Send the messages to the worker thread whenever the `messages` state changes.
+// 这是用户发消息后的"自动触发器"：当 messages 数组发生变化且最后一条是用户刚发的新消息时，自动清空上次的性能数据，把完整的聊天记录发给 Worker 让它开始生成回答。
   useEffect(() => {
     if (messages.filter((x) => x.role === "user").length === 0) {
       // No user messages yet: do nothing.

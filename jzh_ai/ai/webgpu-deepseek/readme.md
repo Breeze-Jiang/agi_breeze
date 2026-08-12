@@ -70,5 +70,5 @@ Transformers.js 将文本转换为 Token
 浏览器使用 WebGPU / WebAssembly 在本地执行模型推理
   ↓
 模型生成结果
-  ↓
+  ↓ 
 网页显示结果

@@ -60,6 +60,9 @@ class TextGenerationPipeline {
 
 const stopping_criteria = new InterruptableStoppingCriteria();
 
+
+// 每次对话, 都会KV 注意力计算 大量的算力计算,
+// 下一次计算的时候message 数组 添加上一条, 缓存之前的计算, 跳过了
 let past_key_values_cache = null;
 async function generate(messages) {
   // Retrieve the text-generation pipeline.
@@ -81,6 +84,7 @@ async function generate(messages) {
   let startTime;
   let numTokens = 0;
   let tps;
+// 这是每生成一个 token（词）就会被调用一次的回调函数，主要干两件事：计算生成速度（tps）+ 判断模型什么时候从"思考中"切换到"开始回答"。
   const token_callback_function = (tokens) => {
     startTime ??= performance.now();
 
@@ -91,6 +95,7 @@ async function generate(messages) {
       state = "answering";
     }
   };
+// 这个是 TextStreamer 解码出可读文字后的回调，把最新的文字片段 + 当前的生成速度 + 状态打包，通过 postMessage 发给主线程，用于打字机效果更新 UI。
   const callback_function = (output) => {
     self.postMessage({
       status: "update",
@@ -100,7 +105,7 @@ async function generate(messages) {
       state,
     });
   };
-
+// TextStreamer 是流水线调度器：每生成一个原始 token 就调用 token_callback_function 做性能统计和状态切换；攒够几个 token 解码成文字后，调用 callback_function 把文字+统计结果发给主线程，最终用户看到实时打字机效果。
   const streamer = new TextStreamer(tokenizer, {
     skip_prompt: true,
     skip_special_tokens: true,
@@ -151,6 +156,14 @@ async function load() {
     // We also add a progress callback to the pipeline so that we can
     // track model loading.
     self.postMessage(x);
+// 这里的x 是一个对象，包含了模型加载的进度信息。如下:
+// {
+//   status: "progress",
+//   file: "model.onnx",      // 哪个文件
+//   progress: 35,            // 新的百分比 35%
+//   loaded: 1750000,
+//   total: 5000000,
+// }
   });
 
   self.postMessage({
@@ -178,17 +191,17 @@ self.addEventListener("message", async (e) => {
       break;
 
     case "generate":
-      stopping_criteria.reset();
+      stopping_criteria.reset();// 清除上一次的中断状态，让模型能正常开始新一轮生成。
       generate(data);
       break;
 
     case "interrupt":
-      stopping_criteria.interrupt();
+      stopping_criteria.interrupt(); //  interrupted 设置为true , llm 实例的属性 每次生成token 检测
       break;
 
     case "reset":
       past_key_values_cache = null;
       stopping_criteria.reset();
       break;
-  }
+  } 
 });
