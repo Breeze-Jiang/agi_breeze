@@ -16,15 +16,14 @@ function render(text) {
 
   const result = DOMPurify.sanitize(
     marked.parse(text, {
-      async: false,
       breaks: true,
     }),
   );
   return result;
 }
 function Message({ role, content, answerIndex }) {
-  const thinking = answerIndex ? content.slice(0, answerIndex) : content;
-  const answer = answerIndex ? content.slice(answerIndex) : "";
+  const thinking = answerIndex !== undefined ? content.slice(0, answerIndex) : content;
+  const answer = answerIndex !== undefined ? content.slice(answerIndex) : "";
 
   const [showThinking, setShowThinking] = useState(false);
 

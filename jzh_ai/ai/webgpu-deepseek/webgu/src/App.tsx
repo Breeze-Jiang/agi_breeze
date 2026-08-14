@@ -5,6 +5,24 @@ import ArrowRightIcon from "./components/icons/ArrowRightIcon";
 import StopIcon from "./components/icons/StopIcon";
 import Progress from "./components/Progress";
 
+// ### 卡顿根因
+// Worker 每生成几个 token 就 postMessage({ status: "update", output }) 一次（频率非常高，每秒几十次）。主线程每次收到 update 会：
+
+// 1. setTps() + setNumTokens() + setMessages() → 触发 React 重渲染
+// 2. Chat 组件重渲染 → 每个 Message 调用 render(text)
+// 3. render(text) 里跑 marked.parse() （Markdown 解析）+ DOMPurify.sanitize() （HTML 消毒）+ <MathJax dynamic> （数学公式渲染） ——这三个操作每次都在 越来越长的文本 上重跑一遍
+// 4. 文本越长，解析越慢 → 后期卡顿越来越明显
+// ### 不改代码的缓解办法
+// 1. 换 Chrome 浏览器 ：WebGPU + V8 引擎性能最好，Edge 次之，Firefox 不支持 WebGPU
+// 2. 关闭其他占 GPU 的标签页 ：模型推理和渲染都在抢 GPU
+// 3. 不要在生成时展开"思维链" ：展开后 MathJax 要渲染更多公式，更卡
+// 4. 缩短问题 ：生成 token 越少，文本越短，解析越快
+// ### 如果将来愿意改代码（面试可答的优化方向）
+// - 节流/防抖 update 消息 ：用 requestAnimationFrame 合并多次 setMessages ，每帧只渲染一次
+// - Message 组件加 React.memo ：只重渲染最后一条消息，历史消息不重复解析
+// - render() 结果缓存 ：用 useMemo 按 content 长度做增量解析，不每次全量跑 marked.parse + DOMPurify
+// - MathJax 延迟渲染 ：生成中只显示纯文本， complete 后再触发 MathJax 渲染
+
 const IS_WEBGPU_AVAILABLE = !!navigator.gpu;
 const STICKY_SCROLL_THRESHOLD = 120; // 距底部的距离
 const EXAMPLES = [
@@ -25,12 +43,12 @@ function App() {
   const [error, setError] = useState(null);   // 报错
   const [loadingMessage, setLoadingMessage] = useState(""); // 加载阶段的文字提示
   const [progressItems, setProgressItems] = useState([]);   // 每个文件的进度条列表
-// 这里的progressItems 是一个数组，包含了每个文件的进度信息。如下:
-// [
-//   { file: "tokenizer.json", progress: 100, loaded: 10000, total: 10000 },
-//   { file: "model.onnx",     progress: 30,  loaded: 1500000, total: 5000000 },
-//   { file: "config.json",    progress: 100, loaded: 2000, total: 2000 },
-// ]
+  // 这里的progressItems 是一个数组，包含了每个文件的进度信息。如下:
+  // [
+  //   { file: "tokenizer.json", progress: 100, loaded: 10000, total: 10000 },
+  //   { file: "model.onnx",     progress: 30,  loaded: 1500000, total: 5000000 },
+  //   { file: "config.json",    progress: 100, loaded: 2000, total: 2000 },
+  // ]
   const [isRunning, setIsRunning] = useState(false);        // 模型是不是正在生成文字
 
   // Inputs and outputs
@@ -78,8 +96,7 @@ function App() {
     // Create a callback function for messages from the worker thread.
     const onMessageReceived = (e) => {
       switch (e.data.status) {
-// 模型加载
-
+        // 模型加载
 
 
         case "loading":
@@ -117,7 +134,7 @@ function App() {
           // Pipeline ready: the worker is ready to accept messages.
           setStatus("ready");
           break;
-// 开始推理
+        // 开始推理
 
 
 
@@ -145,8 +162,8 @@ function App() {
                 ...last,
                 content: last.content + output,
               };
-//               - data.answerIndex === undefined （之前没记过分界点，只记第一次）
-//               - state === "answering" （Worker 说刚从 thinking 切到 answering）
+              //               - data.answerIndex === undefined （之前没记过分界点，只记第一次）
+              //               - state === "answering" （Worker 说刚从 thinking 切到 answering）
               if (data.answerIndex === undefined && state === "answering") {
                 // When state changes to answering, we set the answerIndex
                 data.answerIndex = last.content.length;
@@ -184,7 +201,7 @@ function App() {
   }, []);
 
   // Send the messages to the worker thread whenever the `messages` state changes.
-// 这是用户发消息后的"自动触发器"：当 messages 数组发生变化且最后一条是用户刚发的新消息时，自动清空上次的性能数据，把完整的聊天记录发给 Worker 让它开始生成回答。
+  //  这是用户发消息后的"自动触发器"：当 messages 数组发生变化且最后一条是用户刚发的新消息时，自动清空上次的性能数据，把完整的聊天记录发给 Worker 让它开始生成回答。
   useEffect(() => {
     if (messages.filter((x) => x.role === "user").length === 0) {
       // No user messages yet: do nothing.
@@ -210,16 +227,10 @@ function App() {
   }, [messages, isRunning]);
 
   return IS_WEBGPU_AVAILABLE ? (
-    <div className="flex flex-col h-screen mx-auto items justify-end text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-900">
+    <div className="flex flex-col h-screen mx-auto items-center justify-end text-gray-800 dark:text-gray-200 bg-white dark:bg-gray-900">
       {status === null && messages.length === 0 && (
         <div className="h-full overflow-auto scrollbar-thin flex justify-center items-center flex-col relative">
           <div className="flex flex-col items-center mb-1 max-w-[400px] text-center">
-            <img
-              src="../public/logo.png"
-              width="80%"
-              height="auto"
-              className="block drop-shadow-lg bg-transparent"
-            ></img>
             <h1 className="text-4xl font-bold mb-1">DeepSeek-R1 WebGPU</h1>
             <h2 className="font-semibold">
               A next-generation reasoning model that runs locally in your
