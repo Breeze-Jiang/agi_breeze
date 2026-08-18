@@ -6,6 +6,9 @@
     "module": "esnext",
     "types": ["vite/client", "@webgpu/types"],
     "allowArbitraryExtensions": true,
+    /* 修复说明：保留现有 JSX/Worker JavaScript 文件，由 TypeScript 严格检查 TS 边界而不强制迁移项目结构。 */
+    "allowJs": true,
+    "checkJs": false,
     "skipLibCheck": true,
 
     /* Bundler mode */

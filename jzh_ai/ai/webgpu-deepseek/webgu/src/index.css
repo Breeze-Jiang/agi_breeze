@@ -10,7 +10,8 @@
   background-color: #f3f4f6; /* Equivalent to bg-gray-100 in Tailwind */
 }
 
-.scrollbar-thin::-webkit-scrollbar-track.dark {
+/* 修复说明：dark 类位于祖先节点，不能接在 ::-webkit-scrollbar-track 伪元素之后。 */
+.dark .scrollbar-thin::-webkit-scrollbar-track {
   background-color: #374151; /* Equivalent to dark:bg-gray-700 in Tailwind */
 }
 

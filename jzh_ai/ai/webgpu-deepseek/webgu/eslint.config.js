@@ -19,4 +19,17 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    files: ['src/**/*.{js,jsx}'],
+    // 修复说明：JS Worker 和错误边界只允许带明确 eslint-disable 的诊断输出。
+    languageOptions: {
+      globals: globals.browser,
+      parserOptions: {
+        ecmaFeatures: { jsx: true },
+      },
+    },
+    rules: {
+      'no-console': 'error',
+    },
+  },
 ])

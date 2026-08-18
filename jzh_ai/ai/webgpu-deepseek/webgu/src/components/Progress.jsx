@@ -7,15 +7,30 @@ function formatBytes(size) {
 }
 
 export default function Progress({ text, percentage, total }) {
-  percentage ??= 0;
+  const normalizedPercentage = Number.isFinite(percentage)
+    ? Math.min(100, Math.max(0, percentage))
+    : 0;
+  const hasKnownTotal = Number.isFinite(total) && total > 0;
+
   return (
-    <div className="w-full bg-gray-100 dark:bg-gray-700 text-left rounded-lg overflow-hidden mb-0.5">
+    <div
+      className="relative w-full h-5 bg-gray-100 dark:bg-gray-700 text-left rounded-lg overflow-hidden mb-0.5"
+      role="progressbar"
+      aria-label={`${text} download progress`}
+      aria-valuemin={0}
+      aria-valuemax={100}
+      aria-valuenow={hasKnownTotal ? normalizedPercentage : undefined}
+    >
+      {/* 修复说明：进度填充和文字分层，避免 0% 时溢出的文字或选中背景看起来像已有进度。 */}
       <div
-        className="bg-blue-400 whitespace-nowrap px-1 text-sm"
-        style={{ width: `${percentage}%` }}
-      >
-        {text} ({percentage.toFixed(2)}%
-        {isNaN(total) ? "" : ` of ${formatBytes(total)}`})
+        aria-hidden="true"
+        className="absolute inset-y-0 left-0 bg-blue-400"
+        style={{ width: `${normalizedPercentage}%` }}
+      />
+      <div className="relative z-10 px-1 text-sm leading-5 whitespace-nowrap overflow-hidden text-ellipsis select-none">
+        {text} ({hasKnownTotal
+          ? `${normalizedPercentage.toFixed(2)}% of ${formatBytes(total)}`
+          : "preparing download..."})
       </div>
     </div>
   );

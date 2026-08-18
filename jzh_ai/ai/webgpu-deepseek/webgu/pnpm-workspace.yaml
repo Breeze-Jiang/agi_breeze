@@ -1,4 +1,5 @@
 allowBuilds:
-  onnxruntime-node: set this to true or false
-  protobufjs: set this to true or false
-  sharp: set this to true or false
+  # 修复说明：本项目只在浏览器运行，明确禁用不需要的 Node/图像原生构建脚本，避免 pnpm 因占位配置退出失败。
+  onnxruntime-node: false
+  protobufjs: false
+  sharp: false
