@@ -1,0 +1,11 @@
+{
+  "verification":"静态分析，浏览器运行未验证",
+  "evidence":[
+    {"id":"E1","source":"readme.md:1-7","claim":"目标是左右固定、中间自适应的 PC 三栏布局，并提到内容优先。"},
+    {"id":"E2","source":"readme.md:9-17","claim":"材料记录 BFC 与 float、overflow 的关系。"},
+    {"id":"E3","source":"readme.md:18-25","claim":"材料记录 Flex Formatting Context 与常用 Flex 属性。"},
+    {"id":"E4","source":"readme.md:27-35","claim":"材料尝试解释普通流、局部格式化上下文及隔离性，但存在术语混用。"},
+    {"id":"E5","source":"1.html:8-24","claim":"页面使用 display:flex 和 left/main/right 的语义结构，但没有宽度与伸缩规则。"},
+    {"id":"E6","source":"2.html:8-10","claim":"文件提到 Grid 适合二维布局，但没有实际 CSS。"}
+  ]
+}

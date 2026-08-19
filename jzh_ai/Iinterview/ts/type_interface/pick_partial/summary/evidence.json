@@ -1,0 +1,8 @@
+{
+  "E1":{"source":"1.ts:1-35","fact":"User 类型用于演示 Pick、Omit、Partial、Required"},
+  "E2":{"source":"1.ts:37-55","fact":"Record 构造状态码消息映射，?? 提供未知错误默认值"},
+  "E3":{"source":"1.ts:58-63","fact":"ReturnType 提取函数返回类型，Exclude 排除联合成员"},
+  "E4":{"source":"2.ts:1-13","fact":"keyof 获取 User 键联合，Exclude 排除 email"},
+  "E5":{"source":"2.ts:15","fact":"Omit<User, KeepKeys> 实际删除 KeepKeys，只保留 email，与注释冲突"},
+  "E6":{"source":"readme.md:15-69","fact":"笔记总结工具类型并给出 Omit 的 Pick+Exclude 组合思想"}
+}
