@@ -1,0 +1,13 @@
+{
+  "schema_version": "zh-writing.evidence/v1",
+  "source": "../md-wx-chrome-extensions/readme.md",
+  "items": [
+    {"id":"E1","lines":"1-3","claim":"插件提取英文网页核心内容，调用 AI 翻译，以 Markdown 展示并支持复制。"},
+    {"id":"E2","lines":"35-49","claim":"需求阶段先定义目标、调研、验证 MVP、返回格式和非目标。"},
+    {"id":"E3","lines":"5-15,43-45","claim":"项目采用文档先行，并约束 Agent 在需求阶段只生成文档。"},
+    {"id":"E4","lines":"52-62","claim":"架构阶段关注正文提取、模型兼容切换和微信 Markdown 格式。"},
+    {"id":"E5","lines":"11-14","claim":"材料提到模型可配置、marked、公众号场景和流式布局。"},
+    {"id":"E6","lines":"16-30","claim":"材料使用 Git 管理 AI 生成代码并按状态讨论回退。"},
+    {"id":"E7","lines":"32-33,47-49","claim":"会话管理和文档用于保存、共享上下文。"}
+  ]
+}

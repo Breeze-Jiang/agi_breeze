@@ -1,0 +1,12 @@
+{
+  "schema_version": "zh-writing.evidence/v1",
+  "source": "../readme.md",
+  "items": [
+    {"id": "E1", "lines": "2-6,55-56", "claim": "SDD 是 Spec-Driven Development，强调以规范驱动 AI 协作开发。"},
+    {"id": "E2", "lines": "8-15,22-24", "claim": "Vibe Coding 容易因上下文不足、会话丢失和 AI 猜测产生返工。"},
+    {"id": "E3", "lines": "17-19", "claim": "模糊的用户认证需求可能让 AI 在技术栈和边界不明确时直接生成大量代码。"},
+    {"id": "E4", "lines": "26-36", "claim": "开发可分为文档中的心智创造和按规范生成代码的物理创造。"},
+    {"id": "E5", "lines": "43-51", "claim": "材料列出 PRD、proposal.md、design.md、task.md，并强调规划后持续迭代。"},
+    {"id": "E6", "lines": "55-56", "claim": "材料将 Spec-kit 描述为规范驱动开发框架，但未提供具体用法。"}
+  ]
+}
