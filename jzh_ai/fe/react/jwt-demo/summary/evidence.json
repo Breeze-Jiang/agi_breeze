@@ -1,0 +1,12 @@
+{
+  "E01": {"source": "readme.md:3-13", "fact": "材料以 HTTP 无状态为起点，约定在 Authorization 中携带 Bearer token。"},
+  "E02": {"source": "login-demo/mock/user.js:32-64", "fact": "模拟登录接口校验凭据后使用 jwt.sign 签发 86400 秒有效的 token；敏感值已隐藏。"},
+  "E03": {"source": "login-demo/src/api/config.js:2-18", "fact": "Axios 实例使用 /api 基地址，请求拦截器注入 Authorization，响应拦截器返回 res.data。"},
+  "E04": {"source": "login-demo/mock/user.js:6-23", "fact": "受保护模拟接口拆分 Bearer token 并调用 jwt.verify，失败时返回业务 code 401。"},
+  "E05": {"source": "login-demo/src/store/user.js:5-25", "fact": "Zustand store 同步 token/user 到 localStorage，并提供 setAuth 与 logout。"},
+  "E06": {"source": "login-demo/src/components/RequireAuth.jsx:3-12", "fact": "RequireAuth 仅依据 store 中是否存在 token 决定放行或跳转。"},
+  "E07": {"source": "login-demo/src/pages/Login.jsx:43-56", "fact": "登录成功后写入全局状态并导航，失败时提示。"},
+  "E08": {"source": "login-demo/src/App.jsx:22-35", "fact": "/pay 被 RequireAuth 包裹，但 App 挂载时无条件请求受保护资源。"},
+  "E09": {"source": "login-demo/src/components/Nav.jsx:4-16", "fact": "导航根据 token 切换登录/退出入口，退出只清理本地状态。"},
+  "E10": {"source": "login-demo/package.json:12-30", "fact": "直接依赖包括 React、React Router、Zustand、Axios、jsonwebtoken 与 vite-plugin-mock。"}
+}
