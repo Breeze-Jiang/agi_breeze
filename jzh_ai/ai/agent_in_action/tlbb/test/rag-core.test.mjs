@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict'
+import { basename } from 'node:path'
 import test from 'node:test'
+import { EPubLoader } from '@langchain/community/document_loaders/fs/epub'
 import { DataType, IndexType, MetricType } from '@zilliz/milvus2-sdk-node'
 
+import { EPUB_PATH } from '../src/main.mjs'
+import { createQueryRuntime } from '../src/query.mjs'
+import { createRagRuntime, retrieveRelevantContent } from '../src/rag.mjs'
 import {
   CHUNK_OVERLAP,
   CHUNK_SIZE,
@@ -13,6 +18,13 @@ import {
   formatContext,
   validateRuntimeConfig,
 } from '../src/rag-core.mjs'
+
+test('resolves and loads the bundled EPUB independently of process.cwd()', async () => {
+  // 修复说明：面试时可能从 workspace 根目录启动，EPUB 路径不能依赖当前工作目录。
+  assert.equal(basename(EPUB_PATH), '天龙八部.epub')
+  const documents = await new EPubLoader(EPUB_PATH, { splitChapters: true }).load()
+  assert.ok(documents.length > 100)
+})
 
 test('exposes the verified EPUB chunking and vector settings', () => {
   assert.equal(CHUNK_SIZE, 500)
@@ -64,5 +76,26 @@ test('reports missing variable names without exposing values', () => {
   assert.deepEqual(
     validateRuntimeConfig({ OPENAI_API_KEY: 'configured' }, ['OPENAI_API_KEY']),
     { OPENAI_API_KEY: 'configured' },
+  )
+})
+
+test('validates query and RAG configuration before creating external clients', () => {
+  // 修复说明：工厂必须先报告缺失配置，不能在模块导入阶段创建远程 Client。
+  assert.throws(() => createQueryRuntime({}), /MILVUS_ADDRESS/)
+  assert.throws(() => createRagRuntime({}), /MILVUS_ADDRESS/)
+})
+
+test('does not report an external retrieval failure as an empty search result', async () => {
+  const runtime = {
+    getEmbedding: async () => {
+      throw new Error('embedding unavailable')
+    },
+    client: { search: async () => ({ results: [] }) },
+  }
+
+  // 修复说明：服务异常必须明确失败，只有真实空结果才能返回“未找到相关内容”。
+  await assert.rejects(
+    () => retrieveRelevantContent('测试问题', 3, runtime),
+    /embedding unavailable/,
   )
 })

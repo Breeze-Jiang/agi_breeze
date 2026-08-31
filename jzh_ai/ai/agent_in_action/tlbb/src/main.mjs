@@ -16,30 +16,41 @@ import {
 } from './rag-core.mjs'
 
 // config 
-const EPUB_PATH = '天龙八部.epub' // 天龙八部 epub 路径
-const ADDRESS = process.env.MILVUS_ADDRESS
-const TOKEN = process.env.MILVUS_TOKEN
+export const EPUB_PATH = fileURLToPath(new URL('../天龙八部.epub', import.meta.url)) // 天龙八部 epub 路径
 
 const BOOK_NAME = parse(EPUB_PATH).name
-const Embeddings = new OpenAIEmbeddings({
-  apiKey: process.env.OPENAI_API_KEY,
-  model: process.env.EMBEDDING_MODEL_NAME,
-  configuration: {
-    baseURL: process.env.OPENAI_BASE_URL,
-  },
-  dimensions: VECTOR_DIM,
-})
-const getEmbedding = async (text) => {
-  return await Embeddings.embedQuery(text)
+const REQUIRED_INGESTION_CONFIG = [
+  'MILVUS_ADDRESS',
+  'MILVUS_TOKEN',
+  'OPENAI_API_KEY',
+  'OPENAI_BASE_URL',
+  'EMBEDDING_MODEL_NAME',
+]
+
+export function createIngestionRuntime(env = process.env) {
+  // 修复说明：先校验配置再创建外部 Client，导入模块和本地测试不会意外初始化远程连接。
+  validateRuntimeConfig(env, REQUIRED_INGESTION_CONFIG)
+  const Embeddings = new OpenAIEmbeddings({
+    apiKey: env.OPENAI_API_KEY,
+    model: env.EMBEDDING_MODEL_NAME,
+    configuration: {
+      baseURL: env.OPENAI_BASE_URL,
+    },
+    dimensions: VECTOR_DIM,
+  })
+
+  // 向量数据库的初始化
+  const client = new MilvusClient({
+    address: env.MILVUS_ADDRESS,
+    token: env.MILVUS_TOKEN,
+  })
+  return {
+    client,
+    getEmbedding: async (text) => await Embeddings.embedQuery(text),
+  }
 }
 
-// 向量数据库的初始化
-const client = new MilvusClient({
-  address: ADDRESS,
-  token: TOKEN,
-})
-
-export async function ensureCollection() {
+export async function ensureCollection(client) {
   //没有就建立
   //有就返回
   // 判断是否已经创建
@@ -63,21 +74,18 @@ export async function ensureCollection() {
       console.log('索引创建成功')
     }
     // 细节补充错误
-    try{
-      await client.loadCollection({
-        collection_name: COLLECTION_NAME,
-      })
-      console.log('集合加载成功')
-    }catch(err){
-      console.log('集合已经处于加载状态')
-    }
+    // 修复说明：loadCollection 本身可重复调用，真实加载错误不能伪装成“已经加载”。
+    await client.loadCollection({
+      collection_name: COLLECTION_NAME,
+    })
+    console.log('集合加载成功')
   }catch(err){
     console.error('集合创建失败:', err.message)
     throw err
   }
 }
 // node 后端开发尽量多用try catch
-export async function loadAndProcessEPubStreaming(bookId){
+export async function loadAndProcessEPubStreaming(bookId, runtime){
   try{
     console.log(`\n 开始加载EPUB 文件:${EPUB_PATH}`)
     const loader = new EPubLoader(EPUB_PATH,{
@@ -108,7 +116,7 @@ export async function loadAndProcessEPubStreaming(bookId){
       }
       // 插入章节内容
       console.log(`生成向量并插入中...章节${chapterIndex+1}`)
-      const insertedCount = await insertChunksBatch(chunks,bookId,chapterIndex+1)
+      const insertedCount = await insertChunksBatch(chunks,bookId,chapterIndex+1,runtime)
       totalInserted += insertedCount
       console.log(`已插入${insertedCount}条记录`)
     }
@@ -119,7 +127,7 @@ export async function loadAndProcessEPubStreaming(bookId){
   }
 }
 // 将一批chunk 插入向量数据库
-export async function insertChunksBatch(chunks,bookId,chapterNum){
+export async function insertChunksBatch(chunks,bookId,chapterNum,{ client, getEmbedding }){
   try{
     // 为空 不需要做的
     if(chunks.length === 0){
@@ -138,11 +146,12 @@ export async function insertChunksBatch(chunks,bookId,chapterNum){
         vector: vector,
       }
     }))
-    const insertResult = await client.insert({
+    // 修复说明：固定主键重复演示时使用 upsert，避免同一书籍分块不断产生重复记录。
+    await client.upsert({
       collection_name: COLLECTION_NAME,
       data: insertData,
     })
-    return Number(insertResult.insert_cnt) || 0
+    return insertData.length
 
     // 函数的返回结果要有可预测性 一致
   }catch(err){
@@ -153,13 +162,8 @@ export async function insertChunksBatch(chunks,bookId,chapterNum){
 
 export const main = async () => {
   try{
-    validateRuntimeConfig(process.env, [
-      'MILVUS_ADDRESS',
-      'MILVUS_TOKEN',
-      'OPENAI_API_KEY',
-      'OPENAI_BASE_URL',
-      'EMBEDDING_MODEL_NAME',
-    ])
+    const runtime = createIngestionRuntime(process.env)
+    const { client } = runtime
     console.log('='.repeat(80))
     console.log('电子书开始处理程序')
     console.log('='.repeat(80))
@@ -168,9 +172,9 @@ export const main = async () => {
     console.log('连接成功')
     const bookId = 1
     // 确保集合存在
-    await ensureCollection()
+    await ensureCollection(client)
     // 一边切割一边embedding， 一边存数据库
-    await loadAndProcessEPubStreaming(bookId)
+    await loadAndProcessEPubStreaming(bookId,runtime)
     await client.flush({
     collection_names: [COLLECTION_NAME],
     })

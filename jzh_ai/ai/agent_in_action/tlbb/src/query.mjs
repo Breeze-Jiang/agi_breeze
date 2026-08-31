@@ -14,37 +14,41 @@ import {
   validateRuntimeConfig,
 } from './rag-core.mjs';
 
-const ADDRESS = process.env.MILVUS_ADDRESS;
-// api key
-const TOKEN = process.env.MILVUS_TOKEN;
+const REQUIRED_QUERY_CONFIG = [
+  'MILVUS_ADDRESS',
+  'MILVUS_TOKEN',
+  'OPENAI_API_KEY',
+  'OPENAI_BASE_URL',
+  'EMBEDDING_MODEL_NAME',
+]
 
-const embeddings = new OpenAIEmbeddings({
-  apiKey: process.env.OPENAI_API_KEY,
-  model: process.env.EMBEDDING_MODEL_NAME,
-  configuration: {
-    baseURL: process.env.OPENAI_BASE_URL
-  },
-  dimensions: VECTOR_DIM
-});
-
-const client = new MilvusClient({
-  address: ADDRESS,
-  token: TOKEN
-})
-const getEmbedding = async (text) => {
-  const result = await embeddings.embedQuery(text);
-  return result;
+export function createQueryRuntime(env = process.env) {
+  // 修复说明：先校验完整配置，再创建查询所需的 Milvus 和 Embedding Client。
+  validateRuntimeConfig(env, REQUIRED_QUERY_CONFIG)
+  const ADDRESS = env.MILVUS_ADDRESS;
+  // api key
+  const TOKEN = env.MILVUS_TOKEN;
+  const embeddings = new OpenAIEmbeddings({
+    apiKey: env.OPENAI_API_KEY,
+    model: env.EMBEDDING_MODEL_NAME,
+    configuration: {
+      baseURL: env.OPENAI_BASE_URL
+    },
+    dimensions: VECTOR_DIM
+  });
+  const client = new MilvusClient({
+    address: ADDRESS,
+    token: TOKEN
+  })
+  return {
+    client,
+    getEmbedding: async (text) => await embeddings.embedQuery(text),
+  }
 }
 
 export async function main(){
   try {
-    validateRuntimeConfig(process.env, [
-      'MILVUS_ADDRESS',
-      'MILVUS_TOKEN',
-      'OPENAI_API_KEY',
-      'OPENAI_BASE_URL',
-      'EMBEDDING_MODEL_NAME',
-    ])
+    const { client, getEmbedding } = createQueryRuntime(process.env)
     console.log('Connecting to Milvus...')
     await client.connectPromise
     console.log('Connected \n')
