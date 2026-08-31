@@ -1,0 +1,8 @@
+{
+  "E1": {"source": "readme.md:4-17", "fact": "材料以应用和运行环境整体打包、依赖隔离解释 Docker"},
+  "E2": {"source": "readme.md:31-52", "fact": "材料使用 Nginx、端口映射和配置挂载演示反向代理"},
+  "E3": {"source": "demo/nginx.conf:3-10", "fact": "Nginx 监听 80 并转发到 host.docker.internal:3000"},
+  "E4": {"source": "demo/index.mjs:1-8", "fact": "Node 示例目标端口为 3000，但混用 import 与 require"},
+  "E5": {"source": "demo/package.json:12", "fact": "package.json 声明 commonjs，但 .mjs 仍按 ESM 处理"},
+  "E6": {"source": "readme.md:54-59", "fact": "材料将 Nginx 作为隐藏后端端口的反向代理入口"}
+}
