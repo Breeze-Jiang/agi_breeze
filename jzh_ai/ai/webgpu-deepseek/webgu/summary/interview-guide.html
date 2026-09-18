@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>面试讲解说明 · WebGPU DeepSeek</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --card: #ffffff;
+      --ink: #1f2933;
+      --muted: #5b6672;
+      --accent: #2456d6;
+      --accent-soft: #e8eefc;
+      --border: #dfe3e8;
+      --code-bg: #f0f2f5;
+      --ok: #0b7a4b;
+      --warn: #a45c07;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      margin: 0;
+      padding: 0 0 48px;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      font-size: 16px;
+      line-height: 1.75;
+    }
+
+    .wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    header.hero {
+      background: linear-gradient(135deg, #1b2a6b 0%, #2456d6 60%, #3d7bf5 100%);
+      color: #fff;
+      padding: 40px 16px 32px;
+      text-align: center;
+    }
+
+    header.hero h1 {
+      margin: 0 0 8px;
+      font-size: 24px;
+      line-height: 1.4;
+    }
+
+    header.hero p {
+      margin: 0;
+      opacity: .85;
+      font-size: 14px;
+    }
+
+    .tagline {
+      display: inline-block;
+      margin-top: 14px;
+      padding: 8px 14px;
+      background: rgba(255, 255, 255, .14);
+      border: 1px solid rgba(255, 255, 255, .3);
+      border-radius: 999px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px 18px;
+      margin-top: 18px;
+    }
+
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 19px;
+      margin: 0 0 14px;
+      line-height: 1.4;
+    }
+
+    h2 .num {
+      flex: none;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin: 18px 0 8px;
+      color: #16233b;
+    }
+
+    p {
+      margin: 8px 0;
+    }
+
+    ul,
+    ol {
+      margin: 8px 0;
+      padding-left: 22px;
+    }
+
+    li {
+      margin: 4px 0;
+    }
+
+    strong {
+      color: #14203a;
+    }
+
+    code {
+      background: var(--code-bg);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-size: 13.5px;
+      font-family: Consolas, "Courier New", monospace;
+      word-break: break-all;
+    }
+
+    pre {
+      background: #10182b;
+      color: #dce6ff;
+      border-radius: 10px;
+      padding: 14px;
+      overflow-x: auto;
+      font-size: 12.5px;
+      line-height: 1.6;
+    }
+
+    pre code {
+      background: transparent;
+      color: inherit;
+      padding: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--accent-soft);
+      color: #1c2f5e;
+      font-weight: 600;
+    }
+
+    .tbl-scroll {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      border-radius: 0 10px 10px 0;
+      padding: 12px 14px;
+      margin: 12px 0;
+      font-size: 15px;
+    }
+
+    .callout.gold {
+      border-left-color: #d69e00;
+      background: #fdf5df;
+    }
+
+    .callout.green {
+      border-left-color: var(--ok);
+      background: #e6f5ee;
+    }
+
+    .callout.warn {
+      border-left-color: var(--warn);
+      background: #fdf1dc;
+    }
+
+    .qcard {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin: 10px 0;
+      background: #fbfcfe;
+    }
+
+    .qcard .q {
+      font-weight: 700;
+      color: #1c2f5e;
+      margin-bottom: 6px;
+    }
+
+    .qcard .a {
+      font-size: 15px;
+    }
+
+    .check {
+      color: var(--ok);
+      font-weight: 700;
+    }
+
+    .star {
+      color: #d69e00;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      font-size: 12.5px;
+      margin-top: 28px;
+    }
+
+    @media print {
+      body {
+        background: #fff;
+        font-size: 12px;
+      }
+
+      section {
+        border: none;
+        padding: 8px 0;
+        margin-top: 10px;
+        break-inside: avoid-page;
+      }
+
+      header.hero {
+        padding: 24px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      pre {
+        white-space: pre-wrap;
+        word-break: break-all;
+      }
+
+      h2 {
+        break-after: avoid;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="hero">
+    <h1>面试讲解说明<br>浏览器端 WebGPU DeepSeek 推理应用</h1>
+    <p>所有内容均对应仓库真实代码，可现场打开文件佐证</p>
+    <div class="tagline">"把 1.5B 参数的大模型塞进浏览器，加载得稳、跑得动、挂了能自己站起来。"</div>
+  </header>
+
+  <div class="wrap">
+
+    <section>
+      <h2><span class="num">0</span>30 秒开场（电梯陈述）</h2>
+      <p>"这是一个<strong>纯前端</strong>的大模型推理应用：不需要任何服务器，把 DeepSeek-R1-Distill-Qwen-1.5B 直接跑在浏览器里，用 WebGPU
+        做硬件加速推理，支持流式输出、思维链展示、一键停止。架构上是 <strong>React 主线程管 UI + Web Worker
+          管推理</strong>的双线程模型。我做这个项目的重点不只是跑通官方示例，而是解决了一系列<strong>工程稳定性问题</strong>：WebGPU
+        大缓冲区超限导致模型加载失败的自动降级、加载失败后的状态恢复、重复点击的去重等。技术上覆盖了 Web Worker 通信协议设计、单例模式的延迟加载、Markdown/XSS 安全渲染。"</p>
+      <div class="callout">一句话定位：<strong>"把 1.5B 参数的大模型塞进浏览器，并且让它加载得稳、跑得动、挂了能自己站起来。"</strong></div>
+    </section>
+
+    <section>
+      <h2><span class="num">1</span>项目背景与目标</h2>
+      <h3>背景</h3>
+      <ul>
+        <li>大模型应用通常依赖后端 GPU 服务器，带来<strong>成本、隐私、离线可用性</strong>三个痛点。</li>
+        <li>WebGPU 让浏览器直接调用 GPU 做通用计算，配合 ONNX 量化模型（q4f16），1.5B 参数模型可以塞进消费级显卡跑。</li>
+        <li>模型来源：<strong>HuggingFace 是 AI 圈最火的开源模型社区</strong>（国内对应 ModelScope），各厂商把模型上传供免费使用。本项目凭模型 id
+          <code>onnx-community/DeepSeek-R1-Distill-Qwen-1.5B-ONNX</code>，通过 Transformers.js 远程下载到浏览器本地运行。
+        </li>
+      </ul>
+      <h3>目标（三层递进）</h3>
+      <ol>
+        <li><strong>跑通</strong>：浏览器本地完成模型下载 → GPU 推理 → 流式回答全链路。</li>
+        <li><strong>跑稳</strong>：遇到 WebGPU 实现差异（缓冲区超限、会话创建失败）时自动降级，错误可恢复，界面不撒谎（如实显示实际加载的模型）。</li>
+        <li><strong>跑得好</strong>：流式打字机效果、思维链/正式回答分区展示、生成速度实时统计。</li>
+      </ol>
+      <div class="callout green"><strong>面试价值点：</strong>定位为"前端工程化 + 浏览器端 AI"项目，不是调 API 的玩具——差异化在于稳定性加固和错误恢复设计。</div>
+    </section>
+
+    <section>
+      <h2><span class="num">2</span>技术栈选择与架构设计</h2>
+      <h3>技术栈及"为什么选它"（面试必问）</h3>
+      <div class="tbl-scroll">
+        <table>
+          <tr>
+            <th>技术</th>
+            <th>选型理由（要能说出 why）</th>
+          </tr>
+          <tr>
+            <td>React 19 + TypeScript</td>
+            <td>组件化状态管理适合聊天场景；TS 保证主线程↔Worker 消息协议类型安全（<code>WorkerResponse</code> 联合类型收窄）</td>
+          </tr>
+          <tr>
+            <td>Vite 8</td>
+            <td>原生 ESM 开发体验好；module Worker 依赖打包器支持</td>
+          </tr>
+          <tr>
+            <td>Transformers.js 4.2.0</td>
+            <td>唯一成熟方案：tokenizer + ONNX 推理 + 下载进度回调全家桶，底层 ONNX Runtime Web</td>
+          </tr>
+          <tr>
+            <td>WebGPU（而非 WASM）</td>
+            <td>GPU 并行加速矩阵运算；q4f16 量化依赖 <code>shader-f16</code> 特性</td>
+          </tr>
+          <tr>
+            <td>Web Worker</td>
+            <td>模型加载和推理是长任务，放主线程会冻结 UI</td>
+          </tr>
+          <tr>
+            <td>marked + DOMPurify</td>
+            <td>AIGC 返回 Markdown（格式简洁），需转 HTML 才能显示，且必须消毒防 XSS</td>
+          </tr>
+          <tr>
+            <td>@webgpu/types</td>
+            <td>WebGPU 太新，TS 内置类型未覆盖，需安装类型声明包并配置 tsconfig.app.json</td>
+          </tr>
+          <tr>
+            <td>better-react-mathjax</td>
+            <td>推理类问题输出大量 LaTeX 数学公式</td>
+          </tr>
+          <tr>
+            <td>Tailwind CSS 4</td>
+            <td>原子化样式，快速搭建响应式界面</td>
+          </tr>
+        </table>
+      </div>
+
+      <h3>架构图（能徒手画出来）</h3>
+      <pre><code>┌────────────────── 主线程（React）──────────────────┐
+│ App.tsx                                            │
+│  ├─ 状态机: loading → ready → isRunning → complete │
+│  ├─ 发送: check / load / generate /                │
+│  │        interrupt / reset                        │
+│  └─ 接收: loading·initiate·progress·done·          │
+│           reset-progress·ready·start·update·       │
+│           complete·error                           │
+│ Chat.jsx: marked → DOMPurify → MathJax 分区渲染     │
+└──────────△ postMessage（结构化克隆）────────────────┘
+           │
+┌──────────┴── Worker 线程（worker.js）───────────────┐
+│ 1. check(): requestAdapter 探测 WebGPU              │
+│ 2. TextGenerationPipeline（静态单例）                │
+│     ├─ AutoTokenizer.from_pretrained(...)          │
+│     └─ AutoModelForCausalLM.from_pretrained(        │
+│          dtype:"q4f16", device:"webgpu")           │
+│ 3. generate(): chat template → model.generate       │
+│     ├─ TextStreamer（token 回调→统计 tps/状态切换）  │
+│     └─ InterruptableStoppingCriteria（停止生成）     │
+│ 4. 双模型配置: primary / compatibility 自动降级      │
+└────────────────────────────────────────────────────┘</code></pre>
+
+      <h3>端到端数据流（一图流回答"这个项目是怎么工作的"）</h3>
+      <pre><code>用户打开网页
+  ↓ 凭模型 id 找到 Hugging Face 上的模型
+Transformers.js 下载模型文件到浏览器
+  （大文件 chunk 逐步到达，progress_callback 上报进度）
+  ↓
+浏览器缓存模型文件（二次加载更快，之后可离线）
+  ↓ 用户输入问题
+Transformers.js 将文本转换为 Token
+  ↓
+浏览器使用 WebGPU（可回退 WebAssembly）在本地执行推理
+  ↓ 模型生成结果
+TextStreamer 流式回传 → 网页显示结果</code></pre>
+
+      <h3>架构设计三个关键决策（每个可展开 2 分钟）</h3>
+      <ol>
+        <li><strong>双线程分工</strong>：UI 永不因推理卡顿——Worker 里不能碰 DOM，只能 <code>postMessage</code> 通信，这反过来逼出了清晰的"消息即协议"设计。</li>
+        <li><strong>消息协议状态机</strong>：11 种 status 消息构成完整生命周期，主线程用 TS 联合类型逐一收窄处理，没有裸的 <code>any</code>。</li>
+        <li><strong>模型配置对象化</strong>：<code>MODEL_PROFILES</code> 把模型 id/量化方式/是否支持思维链抽成配置，新增模型只加一个对象。</li>
+      </ol>
+    </section>
+
+    <section>
+      <h2><span class="num">3</span>核心功能模块实现</h2>
+
+      <h3>模块 A：模型加载与单例管理（worker.js）</h3>
+      <ul>
+        <li><code>TextGenerationPipeline</code> 用<strong>静态属性 + <code>??=</code></strong>实现单例式缓存：首次创建、后续复用，避免重复下载和重复创建
+          GPU 会话。</li>
+        <li><code>Promise.all</code> 并行等待 tokenizer 和 model（互不依赖，并行省时间）。</li>
+        <li>tokenizer 和 model 是"创建中"的 Promise 就被缓存了——第二次调用拿到的是<strong>同一个 Promise</strong>，天然防止并发重复加载。</li>
+        <li>模型文件较大，下载以 chunk 逐步到达，<code>progress_callback</code> 把每个文件的 loaded/total 上报给主线程渲染进度条（对应 Worker 回发的
+          <code>initiate/progress/done</code> 消息）。
+        </li>
+        <li>设计模式视角：单例是 GoF 23 种设计模式之一，理念是"面向设计而非实现"——用它替代全局变量来管理全局状态，模型实例天然是全局唯一资源。</li>
+      </ul>
+
+      <h3>模块 B：流式生成与思维链状态机（generate()）</h3>
+      <ul>
+        <li><code>TextStreamer</code> 双回调设计：
+          <ul>
+            <li><code>token_callback_function</code>（每个原始 token）：统计 tps（首 token 时间戳 <code>??=</code> 惰性初始化）、检测
+              <code>&lt;/think&gt;</code> token（id=151649）→ 状态从 thinking 切到 answering。
+            </li>
+            <li><code>callback_function</code>（解码出文字后）：发送
+              <code>{ status:"update", output, tps, numTokens, state }</code>。
+            </li>
+          </ul>
+        </li>
+        <li>主线程在首次进入 answering 时记录
+          <code>answerIndex</code>（当时文本长度），<strong>把同一段文本切成"思维链"和"正式回答"两段</strong>——折叠思考过程的实现原理。
+        </li>
+        <li><code>InterruptableStoppingCriteria</code>：点停止 → 主线程发 interrupt → Worker 置标志 → 模型每生成一个 token 检查 →
+          提前终止。generate 前先 reset()。</li>
+      </ul>
+
+      <h3>模块 C：双模型自动降级（performLoad()）</h3>
+      <ul>
+        <li>主模型 DeepSeek-1.5B（q4f16）失败且<strong>仅当</strong>命中已知大缓冲区错误时（正则同时匹配 <code>createBuffer</code> +
+          <code>too large</code> + <code>mappedAtCreation</code> 三特征），才降级到 SmolLM2-135M（q4）。
+        </li>
+        <li>降级前发 <code>reset-progress</code> 清空旧进度；切换 profile 时清理失败 Promise、KV cache、停止条件。</li>
+      </ul>
+      <div class="callout gold"><strong>严格错误匹配是刻意的：</strong>网络错误、模型文件 404 等真实故障不会被静默降级，而是原样抛出——防止"用错误的方式掩盖错误"。</div>
+
+      <h3>模块 D：前端渲染与安全（Chat.jsx）</h3>
+      <ul>
+        <li>渲染管线：<code>marked.parse()</code> → <code>DOMPurify.sanitize()</code> → <code>dangerouslySetInnerHTML</code>。
+        </li>
+        <li>模型输出是不可信输入（可能被诱导输出恶意 HTML），DOMPurify 是必要的安全边界。</li>
+        <li>思维链默认折叠，思考中图标呼吸动画，思考完显示 "View reasoning"。</li>
+      </ul>
+
+      <h3>模块 E：交互细节（App.tsx）</h3>
+      <ul>
+        <li>智能吸底滚动：距底部 &lt;120px 才自动跟随，用户翻历史时不会被强行拽回。</li>
+        <li>textarea 高度自适应（24~200px）；Enter 发送 / Shift+Enter 换行。</li>
+        <li>完成后显示 "Generated N tokens in X seconds"（由 numTokens / tps 反推）。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="num">4</span>个人负责的关键部分</h2>
+      <div class="callout">讲述口径：项目基于 HuggingFace 官方示例起步（学习用途），<strong>以下均为我独立完成的改造</strong>，每条都能在代码"修复说明"注释中指认。</div>
+      <ol>
+        <li><strong>稳定性加固（核心贡献）</strong>：主模型→兼容模型自动降级机制，含严格错误识别正则、降级前后状态清理。</li>
+        <li><strong>错误恢复闭环</strong>：修复"加载失败后按钮永久禁用只能刷新页面"——error 处理器退出 loading、清进度、恢复按钮；补 Worker 线程级 error 事件兜底。</li>
+        <li><strong>加载去重</strong>：<code>loadingPromise</code> 单飞（single-flight）模式，快速连点不会并发创建多份下载和 GPU 会话。</li>
+        <li><strong>UI 如实性</strong>：Worker 回报实际模型名和运行模式，兼容模式明确显示
+          <code>Compatibility mode · SmolLM2-135M-Instruct</code>，不冒充 DeepSeek。
+        </li>
+        <li><strong>健壮性细节</strong>：乱序 update 消息直接忽略防 undefined 崩溃；StrictMode 双挂载下 Worker 正确创建/终止；兼容模型选型基于实机逐个验证。</li>
+        <li><strong>依赖治理</strong>：Transformers.js 3.7.1 → 4.2.0 升级根治缓冲区问题；同步 npm/pnpm 双锁文件；禁用不需要的原生构建脚本，修复 pnpm 安装失败。
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h2><span class="num">5</span>技术挑战及解决方案（STAR 结构）</h2>
+
+      <h3>挑战 1：模型加载必挂——445MiB 的 GPU 缓冲区超限 <span class="star">⭐ 重点讲</span></h3>
+      <ul>
+        <li>
+          <strong>现象（S）</strong>：加载主模型必然失败：<code>RangeError: createBuffer failed, size (466747392) is too large for the implementation when mappedAtCreation == true</code>。
+        </li>
+        <li><strong>分析（T）</strong>：逐层定位——不是显存不够（适配器 maxBufferSize 有
+          2GiB），而是旧版运行时创建<strong>映射缓冲区</strong>（<code>mappedAtCreation</code>，初始化时 CPU 可写的暂存缓冲）时把约 445MiB 权重塞进单个
+          buffer，浏览器对这类 buffer 有独立上限，直接拒绝。</li>
+        <li><strong>行动（A）</strong>：三层方案——① 升级 Transformers.js 3.7.1→4.2.0，新版改了权重上传策略，实机直接跑通；②
+          保留防御：对仍命中该错误的旧环境，用三特征正则严格识别；③ 自动降级到兼容模型。</li>
+        <li><strong>结果（R）</strong>：主路径实机跑通完整生成；受限环境优雅降级；真实网络故障仍显式报错。</li>
+      </ul>
+
+      <h3>挑战 2：兼容模型选型——"看着小"不等于"能跑"</h3>
+      <ul>
+        <li><strong>现象</strong>：SmolLM2-360M 和 135M 的 q4f16 版本都在 <strong>ONNX 会话创建阶段</strong>抛出 WASM 数值异常。</li>
+        <li><strong>行动</strong>：没有只按文件大小拍脑袋，而是逐个量化格式实机验证——135M 的 <strong>q4</strong>（放弃 f16）完整通过下载、会话创建、shader
+          预热、生成、中断全流程。</li>
+        <li><strong>面试亮点</strong>：体现"用实验数据替代假设"的调试方法论。</li>
+      </ul>
+
+      <h3>挑战 3：流式渲染的性能退化（诚实承认 + 有方案）</h3>
+      <ul>
+        <li><strong>现象</strong>：生成后期越来越卡。根因：Worker 每秒几十次 update → 每次 setMessages 全列表重渲染 →
+          每条消息对<strong>越来越长的文本</strong>重跑 marked + DOMPurify + MathJax，复杂度 O(n²)。</li>
+        <li><strong>已做</strong>：思维链默认折叠（减少 MathJax 渲染量）。</li>
+        <li><strong>明确方案</strong>：rAF 节流合并 update、<code>React.memo</code> 只重渲染最后一条、按内容长度增量解析、生成中纯文本完成后统一跑 MathJax。</li>
+      </ul>
+      <div class="callout warn"><strong>话术要点：</strong>主动说"这是我知道但还没做的"——诚实 + 有方案比装完美更得分。</div>
+
+      <h3>挑战 4：异步状态的一致性陷阱</h3>
+      <ul>
+        <li>重复点击创建多份加载 → single-flight <code>loadingPromise</code>；</li>
+        <li>模型切换后旧进度残留 → 新增 <code>reset-progress</code> 消息；</li>
+        <li>失败的 Promise 被 <code>??=</code> 缓存导致重试"秒失败" → 切换 profile 时清空缓存；</li>
+        <li>KV cache 已保存但未启用（官方 TODO），reset 时仍做清理——可主动讲：多轮对话 KV 复用能省大量重复计算，是明确的下一步优化。</li>
+      </ul>
+
+      <h3>挑战 5：TypeScript 不认识 navigator.gpu</h3>
+      <ul>
+        <li><strong>现象</strong>：WebGPU 是实验性新 API，TS 内置的 <code>Navigator</code> 类型声明没有 <code>gpu</code>
+          属性，<code>!!navigator.gpu</code> 直接编译报错。</li>
+        <li><strong>方案对比</strong>：快但糙的 <code>as any</code> 断言（丢失全部类型安全）vs 正规方案——安装 <code>npm i -D @webgpu/types</code>
+          并在 <code>tsconfig.app.json</code> 中引入。</li>
+        <li><strong>结果</strong>：选择正规方案，获得完整 WebGPU 类型提示；顺便讲清"开发阶段用 TS，打包后是 JS，类型声明只存在于开发期"。</li>
+        <li><strong>面试亮点</strong>：展示 TS 类型系统（.d.ts 类型声明文件、tsconfig 配置）的真实使用经验，前端面试很爱问这类问题。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="num">6</span>项目成果与数据指标</h2>
+      <h3>确定性数据（来自构建产物与实机验证，可直接说）</h3>
+      <ul>
+        <li>产物体积：Worker 打包 519KB、主 JS 276KB（gzip 88KB）、ONNX Runtime WASM 23.5MB（gzip 5.8MB）。</li>
+        <li>实测环境：Windows + Chrome（硬件 D3D 适配器），支持 <code>shader-f16</code>，<code>maxBufferSize</code> 2GiB。</li>
+        <li>模型权重：主模型单缓冲 466,747,392 字节（约 445MiB，q4f16 量化的 1.5B 模型）。</li>
+        <li>全链路验证：<code>node --check</code> / <code>eslint</code> / <code>tsc + vite build</code> /
+          <code>pnpm install --frozen-lockfile</code> 全通过；浏览器端主路径与兼容路径均完成"下载→预热→生成→中断收尾"，桌面与 390×844 移动视口无布局问题，控制台零报错。
+        </li>
+      </ul>
+      <div class="callout warn"><strong>面试前务必实测补填（不要编造）：</strong>① 本机 tokens/second（界面底部实时显示，跑一次记下来）；②
+        模型首次下载耗时与二次加载（浏览器缓存）耗时；③ 兼容模式与主模型的 tps 对比。</div>
+      <h3>定性成果</h3>
+      <ul>
+        <li>断网可用、数据不出本机（隐私）；零服务器成本；</li>
+        <li>一次加载后可离线使用；</li>
+        <li>故障自愈：两种已知 WebGPU 环境限制均有兜底路径。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="num">7</span>项目经验总结与反思</h2>
+      <h3>做对了什么</h3>
+      <ol>
+        <li><strong>先定位根因再动手</strong>：445MiB 报错没有盲目换模型/换显卡，而是读懂 <code>mappedAtCreation</code> 语义，确认是运行时策略问题。</li>
+        <li><strong>降级要有严格边界</strong>：只对确认的错误降级，避免"静默吞错"——宁可明确失败，不可错误地成功。</li>
+        <li><strong>实机验证替代理论推断</strong>：兼容模型是跑出来的，不是选出来的。</li>
+        <li><strong>状态恢复是产品级要求</strong>：任何失败路径都要能"重试"，不能要求用户刷新页面。</li>
+      </ol>
+      <h3>不足与改进方向（主动说）</h3>
+      <ol>
+        <li>流式渲染 O(n²) 性能问题未做节流和 memo（方案已想好）。</li>
+        <li>KV cache 未真正启用，多轮对话存在重复计算。</li>
+        <li>消息协议靠字符串约定，可演进为带版本号的结构化协议。</li>
+        <li>缺自动化测试：消息状态机适合用 Vitest 做单测。</li>
+      </ol>
+      <div class="callout green"><strong>迁移价值（面试官关心"这段经验对我们要什么用"）：</strong>Worker 通信协议设计 → 任何"重计算 + UI"分离场景；异步资源缓存/失效/去重
+        → 所有前端资源管理；第三方库升级排障、错误边界设计 → 日常工程通用能力。</div>
+      <h3>怎么回答"这个项目你是怎么学的"（个人介绍高频题）</h3>
+      <ul>
+        <li>系统看书补基础（《你不知道的 JavaScript》这类讲透语言机制的书）；</li>
+        <li>跟进社区：掘金等技术社区、优质博主的文章；</li>
+        <li>直接读 GitHub 源码（Transformers.js 官方示例），不懂的 API 查官方文档；</li>
+        <li>学完输出：写学习总结、笔记发布到社区——"输出倒逼输入"。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2><span class="num">8</span>追问预案（面试官大概率会问）</h2>
+
+      <div class="qcard">
+        <div class="q">Q1：为什么放 Worker？放主线程会怎样？</div>
+        <div class="a">主线程每帧只有 ~16ms 预算，模型加载（秒级）和推理（每 token 都是矩阵乘法）是长任务，放主线程会冻结输入框/动画/进度条。Worker 独立线程跑 JS，通过
+          <code>postMessage</code>（结构化克隆，传副本不是引用）通信。代价：不能碰 DOM，必须设计消息协议。
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q2：WebGPU 和 WebGL 的区别？为什么不用 WASM CPU 推理？</div>
+        <div class="a">WebGPU 是显式 API（类似 Vulkan/Metal/D3D12），支持 compute shader、更能吃满 GPU 并行能力；WebGL 主要为图形渲染设计。WASM CPU
+          推理可用但慢一个数量级，q4f16 还依赖 GPU 的 <code>shader-f16</code> 半精度特性。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q3：q4f16 是什么意思？</div>
+        <div class="a">权重用 4-bit 量化（每个权重从 fp16 压到 4 bit，体积约 1/4），激活计算用 fp16 半精度——让 1.5B 模型权重约 445MB，塞进消费级 GPU 显存。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q4：<code>??=</code> 和 <code>||=</code> 区别？项目里为什么用 <code>??=</code>？</div>
+        <div class="a"><code>??=</code> 只在 null/undefined 时赋值；<code>||=</code> 对 0、false、空字符串也赋值。缓存场景下"已创建的
+          Promise"永远真值，两者效果相同，但 <code>??=</code> 语义更精确。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q5：这真的是单例模式吗？</div>
+        <div class="a">严格说是"静态缓存实现的单例式管理"——没有私有构造器禁止 new，但通过类静态属性保证全应用只有一份实例。JS 中常见的轻量实现。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q6：<code>Promise.all</code> 等的两个 Promise 是什么时候创建的？</div>
+        <div class="a">调用 <code>getInstance()</code> 时同步创建（<code>from_pretrained</code> 返回 Promise），<code>??=</code>
+          缓存的也是 Promise 本身——第二次调用不会重新下载，而是 await 同一个 Promise。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q7：interrupt 是怎么立刻停下来的？</div>
+        <div class="a">不是杀线程。<code>InterruptableStoppingCriteria</code> 是 <code>model.generate</code> 每生成一个 token
+          都会询问的回调，<code>interrupt()</code> 置标志位，下一次检查时返回 true 终止循环。粒度是"最多多生成一个 token"。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q8：postMessage 传大对象会怎样？</div>
+        <div class="a">结构化克隆有拷贝开销。本项目传的都是小文本片段没问题；传大二进制（如音频帧）应该用 Transferable（ArrayBuffer 转移所有权，零拷贝）或 SharedArrayBuffer。
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q9：为什么用 <code>dangerouslySetInnerHTML</code>？安全怎么保证？</div>
+        <div class="a">Markdown 必须转 HTML 才能渲染，React 默认转义会把标签显示成文本。它绕过转义但有 XSS 风险，所以前置 <code>DOMPurify.sanitize</code>
+          白名单消毒。模型输出是不可信输入（可能被提示注入诱导输出恶意标签）。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q10：React StrictMode 下 Worker 会不会创建两次？</div>
+        <div class="a">开发模式会双挂载，所以 effect cleanup 里 <code>terminate()</code> 并移除监听器，二次挂载重新创建——生命周期严格对称，不会泄漏线程。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q11：KV cache 是什么？你的项目里用了吗？</div>
+        <div class="a">Transformer 自回归生成时每步注意力都要历史 token 的 Key/Value。缓存后新 token 只算增量。项目里已保存 <code>past_key_values</code>
+          但官方标注 TODO 未启用（多轮对话有重复计算），是明确的优化方向。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q12：如果加载一直转圈/卡在 99% 怎么办？</div>
+        <div class="a">现有：Worker 线程级 error 事件兜底 + 界面可重试。可加强：fetch 超时与重试、断点续传、失败率上报。诚实说当前对"网络缓慢但未失败"没有超时处理。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q13：transformers.js 升级会不会引入新问题？怎么回归？</div>
+        <div class="a">清单式回归：构建通过 → 主模型全流程 → 强制兼容路径 → 中断 → reset → 移动视口。锁文件同步（npm + pnpm
+          <code>--frozen-lockfile</code>）保证团队/CI 安装一致。
+        </div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q14：TS 里 navigator.gpu 报错怎么解决？</div>
+        <div class="a">根因是 WebGPU 太新，TS 内置 <code>Navigator</code> 类型没有 <code>gpu</code>
+          属性（缺类型声明文件）。正规解法：<code>npm i -D @webgpu/types</code>，在 <code>tsconfig.app.json</code> 中引入。临时可用
+          <code>as any</code> 断言，但会丢失类型安全，不推荐。</div>
+      </div>
+
+      <div class="qcard">
+        <div class="q">Q15：模型文件怎么下载的？进度条怎么实现的？</div>
+        <div class="a"><code>from_pretrained()</code> 返回 Promise，大文件以 chunk 逐步到达；Transformers.js 提供
+          progress_callback，每个文件上报 <code>{file, loaded, total, progress}</code>，Worker 转发
+          <code>initiate/progress/done</code> 三种消息，主线程据此增删改进度条列表。下载完成后浏览器缓存，二次加载明显更快，且可离线。</div>
+      </div>
+    </section>
+
+    <section>
+      <h2><span class="num">9</span>现场演示备忘</h2>
+      <pre><code>npm install
+npm run dev -- --host 127.0.0.1</code></pre>
+      <ul>
+        <li>用新版 Chrome/Edge，确认硬件加速开启（<code>chrome://gpu</code> 查 WebGPU 状态）。</li>
+        <li>首次需从 HuggingFace 下载模型（约 1GB+，提前预热缓存）。</li>
+        <li>正常显示 <code>Model · DeepSeek-R1-Distill-Qwen-1.5B</code>；受限环境显示
+          <code>Compatibility mode · SmolLM2-135M-Instruct</code>——<strong>两种结果都能讲出完整故事</strong>。
+        </li>
+        <li>准备一个数学题（如 <code>Solve x^2 - 3x + 2 = 0</code>）演示思维链 → 折叠展开 → 公式渲染。</li>
+        <li>演示"停止生成"按钮，顺势讲 Q7 的中断原理。</li>
+      </ul>
+    </section>
+
+    <footer>WebGPU DeepSeek · 面试讲解说明 · 生成于 2026-09-11</footer>
+  </div>
+</body>
+
+</html>
