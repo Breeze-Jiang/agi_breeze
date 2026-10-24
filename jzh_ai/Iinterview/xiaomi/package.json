@@ -1,0 +1,13 @@
+{
+  "name": "xiaomi",
+  "version": "1.0.0",
+  "description": "传统前端（少量ai思想，后端运维）面试题， 题量比较大， 难度中等， 需要一轮复习就可以拿下",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
